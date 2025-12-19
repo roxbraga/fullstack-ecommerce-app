@@ -1,12 +1,16 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 import "notyf/notyf.min.css";
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from "pinia";
 import App from './App.vue'
 
 
+import HomePage from "./pages/Home.vue";
 import RegisterPage from "./pages/Register.vue";
 import ProductCatalog from './pages/ProductCatalog.vue';
 import LoginPage from "./pages/Login.vue";
@@ -18,11 +22,11 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        // {
-        //     path: "/",
-        //     name: "Home",
-        //     component: HomePage,
-        // },
+        {
+            path: "/",
+            name: "Home",
+            component: HomePage,
+        },
         {
             path: "/register",
             name: "Register",
