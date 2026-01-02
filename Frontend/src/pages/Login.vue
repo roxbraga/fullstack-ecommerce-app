@@ -14,11 +14,10 @@
         <!-- Menu -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#">HOME</a></li>
             <li class="nav-item"><a class="nav-link" href="#">ABOUT</a></li>
             <li class="nav-item"><a class="nav-link" href="#">SERVICE</a></li>
             <li class="nav-item"><a class="nav-link" href="#">DESIGN</a></li>
-            <li class="nav-item"><a class="nav-link" href="#">CONTACT</a></li>
+            <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
           </ul>
         </div>
       </div>
@@ -266,13 +265,13 @@ h1 span {
 }
 
 .navbar-nav .nav-item {
-  margin: 0 10px; /* Add some space between items */
+  margin: 0 10px; 
 }
 
 /* Center Login Form and Search Bar */
 .d-flex {
   display: flex;
-  justify-content: center; /* Center both search and login forms */
+  justify-content: center; 
   align-items: center;
   gap: 15px;
   margin-top: 50px;
@@ -322,17 +321,16 @@ h1 span {
 /* Large Screen Adjustments */
 @media (min-width: 1200px) {
   .container {
-    max-width: 1200px; /* Limit content width on large screens */
-    margin: auto;
+    max-width: 1200px; 
   }
 
   .login-page {
-    height: 100vh; /* Full height on large screens */
+    height: 100vh; 
     background-position: center center;
   }
 
   .d-flex {
-    gap: 30px; /* More space between login form and search on larger screens */
+    gap: 30px; 
   }
 }
 

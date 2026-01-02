@@ -132,7 +132,7 @@ const logoutUser = () => {
 
 /* NAV ITEMS */
 .sidebar-item {
-  all: unset; /* 🔥 removes button default background */
+  all: unset; 
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -10,7 +10,18 @@
           class="col-md-4 col-sm-6"
         >
           <div class="product-card">
-            <h5 class="product-name">{{ product.name }}</h5>
+
+            <!-- IMAGE -->
+            <div class="product-image-wrapper">
+              <img
+                :src="product.image || '/images/placeholder.png'"
+                :alt="product.name"
+                class="product-image"
+              />
+            </div>
+
+            <!-- INFO -->
+            <h5 class="product-name mt-3">{{ product.name }}</h5>
             <p class="product-category">{{ product.category }}</p>
             <p class="product-price">₱{{ product.price }}</p>
 
@@ -29,6 +40,7 @@
                 Add to Cart
               </button>
             </div>
+
           </div>
         </div>
       </div>
@@ -65,7 +77,6 @@ const goToDetails = (id) => {
   router.push(`/products/${id}`)
 }
 
-/* 🔥 FINAL ADD TO CART */
 const addToCart = async (productId) => {
   try {
     await cart.addToCart(productId)
@@ -75,7 +86,6 @@ const addToCart = async (productId) => {
     notyf.error('Failed to add to cart')
   }
 }
-
 
 onMounted(fetchProducts)
 </script>
@@ -91,7 +101,7 @@ onMounted(fetchProducts)
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.55);
+  background: rgba(0, 0, 0, 0.55);
 }
 
 .container {
@@ -99,36 +109,57 @@ onMounted(fetchProducts)
   z-index: 1;
 }
 
+/* TITLE */
 .page-title {
   font-family: 'League Script', cursive;
   color: #ffd84d;
   font-size: 2.5rem;
 }
 
+/* CARD */
 .product-card {
-  background: rgba(33,37,41,0.75);
+  background: rgba(33, 37, 41, 0.75);
   backdrop-filter: blur(6px);
   border-radius: 16px;
   padding: 1.5rem;
-  color: white;
+  color: #fff;
   text-align: center;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  height: 100%;
 }
 
+/* IMAGE */
+.product-image-wrapper {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* TEXT */
 .product-name {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .product-category {
-  color: #ccc;
+  color: #adb5bd;
   font-size: 0.9rem;
 }
 
 .product-price {
   font-size: 1.2rem;
   color: #ffd84d;
+  font-weight: 700;
 }
 
+/* BUTTONS */
 .product-card .btn {
   border-radius: 12px;
   font-weight: 600;

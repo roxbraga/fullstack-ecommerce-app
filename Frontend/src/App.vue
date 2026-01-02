@@ -21,7 +21,7 @@ onMounted(async () => {
 
   if (token) {
     await store.getUserDetails()
-    await ordersStore.fetchMyOrders() // 🔥 THIS FIXES IT
+    await ordersStore.fetchMyOrders() 
   }
 })
 </script>

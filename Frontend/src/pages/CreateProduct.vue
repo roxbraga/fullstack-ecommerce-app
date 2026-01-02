@@ -4,45 +4,96 @@
 
     <form @submit.prevent="addProduct" class="product-card">
       <div class="row g-3">
+        <!-- NAME -->
         <div class="col-md-6">
           <label class="form-label">Name</label>
-          <input v-model="form.name" type="text" class="form-control custom-input" required />
+          <input
+            v-model="form.name"
+            type="text"
+            class="form-control custom-input"
+            required
+          />
         </div>
 
+        <!-- PRICE -->
         <div class="col-md-6">
           <label class="form-label">Price</label>
-          <input v-model.number="form.price" type="number" min="0" class="form-control custom-input" required />
+          <input
+            v-model.number="form.price"
+            type="number"
+            min="0"
+            class="form-control custom-input"
+            required
+          />
         </div>
 
+        <!-- CATEGORY -->
         <div class="col-md-6">
           <label class="form-label">Category</label>
-          <input v-model="form.category" type="text" class="form-control custom-input" required />
+          <input
+            v-model="form.category"
+            type="text"
+            class="form-control custom-input"
+            required
+          />
         </div>
 
+        <!-- STOCK (FIXED) -->
         <div class="col-md-6">
-          <label class="form-label">Quantity</label>
-          <input v-model.number="form.quantity" type="number" min="0" class="form-control custom-input" required />
+          <label class="form-label">Stock</label>
+          <input
+            v-model.number="form.stock"
+            type="number"
+            min="0"
+            class="form-control custom-input"
+            required
+          />
         </div>
 
+        <!-- DESCRIPTION -->
         <div class="col-12">
           <label class="form-label">Description</label>
-          <textarea v-model="form.description" rows="3" class="form-control custom-input" required></textarea>
+          <textarea
+            v-model="form.description"
+            rows="3"
+            class="form-control custom-input"
+            required
+          ></textarea>
         </div>
 
+        <!-- IMAGE -->
         <div class="col-12">
           <label class="form-label">Image URL</label>
-          <input v-model="form.image" type="text" class="form-control custom-input" placeholder="Paste image URL" />
+          <input
+            v-model="form.image"
+            type="text"
+            class="form-control custom-input"
+            placeholder="Paste image URL"
+          />
         </div>
 
+        <!-- ACTIVE -->
         <div class="col-12">
           <div class="form-check">
-            <input v-model="form.isActive" type="checkbox" class="form-check-input" id="isActive" />
-            <label class="form-check-label" for="isActive">Active</label>
+            <input
+              v-model="form.isActive"
+              type="checkbox"
+              class="form-check-input"
+              id="isActive"
+            />
+            <label class="form-check-label" for="isActive">
+              Active
+            </label>
           </div>
         </div>
       </div>
 
-      <button type="submit" class="btn btn-gradient btn-lg w-100 mt-3">Add Product</button>
+      <button
+        type="submit"
+        class="btn btn-gradient btn-lg w-100 mt-3"
+      >
+        Add Product
+      </button>
     </form>
   </div>
 
@@ -62,14 +113,16 @@ const store = useGlobalStore()
 const productsStore = useProductsStore()
 const router = useRouter()
 
-const isAdmin = computed(() => store.isLoggedIn && store.user.isAdmin === true)
+const isAdmin = computed(
+  () => store.isLoggedIn && store.user?.isAdmin === true
+)
 
 const form = reactive({
   name: '',
   description: '',
   price: 0,
   category: '',
-  quantity: 0,
+  stock: 0,      
   image: '',
   isActive: true
 })
@@ -87,12 +140,11 @@ async function addProduct() {
 
     router.push('/admin/products-list')
   } catch (err) {
-    alert('Failed to add product. Check console.')
+    console.error(err)
+    alert('Failed to add product.')
   }
 }
 </script>
-
-
 
 <style scoped>
 .container {
@@ -139,4 +191,11 @@ textarea.custom-input {
   .product-card { padding: 1rem; }
   .page-title { font-size: 1.8rem; }
 }
+.product-description {
+  color: #f8f9fa;       
+  font-size: 0.9rem;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
 </style>

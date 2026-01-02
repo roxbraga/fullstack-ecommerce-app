@@ -23,7 +23,6 @@ export const useCartStore = defineStore('cart', {
   },
 
   actions: {
-    /* HYDRATE CART */
     async fetchCart() {
       this.loading = true
       try {
@@ -38,13 +37,11 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
-    /* ADD TO CART  */
     async addToCart(productId, quantity = 1) {
       await api.post('/cart/add', { productId, quantity })
       await this.fetchCart()
     },
 
-    /* UPDATE ITEM */
     async updateItem(productId, payload) {
       const { data } = await api.patch('/cart/update', {
         productId,
@@ -57,7 +54,6 @@ export const useCartStore = defineStore('cart', {
       }))
     },
 
-    /* REMOVE ITEM */
     async removeFromCart(productId) {
       const { data } = await api.delete(`/cart/remove/${productId}`)
       this.items = data.items.map(i => ({
@@ -67,7 +63,6 @@ export const useCartStore = defineStore('cart', {
       }))
     },
 
-    /* CLEAR CART */
     async clearCart() {
       await api.delete('/cart/clear')
       this.items = []

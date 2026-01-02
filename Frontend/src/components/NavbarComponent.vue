@@ -4,7 +4,7 @@
 
       <!-- LOGO -->
       <router-link to="/" class="navbar-brand logo d-flex align-items-center">
-        <i class="bi bi-shop me-2"></i>
+        <i class="bi bi-car-front-fill me-2"></i>
         Unicoss Garage
       </router-link>
 
@@ -106,7 +106,7 @@ const firstName = computed(() => {
   return store.user.name.split(' ')[0]
 })
 
-// ✅ REACTIVE – auto updates
+//  REACTIVE – auto updates
 const ordersCount = computed(() => ordersStore.totalOrders)
 
 const logout = () => {
@@ -118,9 +118,8 @@ const logout = () => {
 
 
 <style scoped>
-/* ===============================
-   NAVBAR BACKGROUND
-================================ */
+
+/*NAVBAR BACKGROUND*/
 .navbar-glass {
   background: linear-gradient(
     180deg,
@@ -131,9 +130,9 @@ const logout = () => {
   z-index: 1050;
 }
 
-/* ===============================
-   LOGO
-================================ */
+
+/*LOGO*/
+
 .logo {
   font-weight: 700;
   font-size: 1.35rem;
@@ -141,9 +140,8 @@ const logout = () => {
   text-decoration: none;
 }
 
-/* ===============================
-   NAV LINKS
-================================ */
+/*NAV LINKS*/
+
 .nav-link {
   color: #f8f9fa;
   font-weight: 500;
@@ -155,9 +153,8 @@ const logout = () => {
   color: #ffc107 !important;
 }
 
-/* ===============================
-   GREETING
-================================ */
+ /*GREETING*/
+
 .greeting {
   display: flex;
   align-items: center;
@@ -173,9 +170,8 @@ const logout = () => {
   text-overflow: ellipsis;
 }
 
-/* ===============================
-   SEARCH
-================================ */
+ /*SEARCH*/
+
 .large-search-bar {
   width: 420px;
   border-radius: 0.375rem 0 0 0.375rem;
@@ -188,9 +184,8 @@ const logout = () => {
   border-radius: 0 0.375rem 0.375rem 0;
 }
 
-/* ===============================
-   LOGOUT BUTTON
-================================ */
+/*LOGOUT BUTTON*/
+
 .logout-btn {
   color: #ffc107;
   border-color: #ffc107;
@@ -201,9 +196,9 @@ const logout = () => {
   color: #000;
 }
 
-/* ===============================
-   MOBILE & TABLET TUNING
-================================ */
+
+/*MOBILE & TABLET TUNING*/
+
 @media (max-width: 992px) {
   /* overall navbar height */
   .navbar {
@@ -238,11 +233,10 @@ const logout = () => {
   }
 }
 
-/* ===============================
-   EXTRA SMALL DEVICES
-================================ */
+ /*SMALL DEVICES*/
+
 @media (max-width: 576px) {
-  /* tighter horizontal padding */
+  
   .navbar {
     padding-left: 0.25rem;
     padding-right: 0.25rem;

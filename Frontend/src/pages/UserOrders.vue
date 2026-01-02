@@ -54,27 +54,23 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import api from '../api'
+import { onMounted, computed } from 'vue'
+import { useOrdersStore } from '../stores/orders'
 
-const orders = ref([])
-const loading = ref(false)
+const ordersStore = useOrdersStore()
 
-const fetchOrders = async () => {
-  loading.value = true
-  try {
-    const { data } = await api.get('/orders/my')
-    orders.value = data
-  } finally {
-    loading.value = false
-  }
-}
+onMounted(() => {
+  ordersStore.fetchMyOrders()
+})
 
-onMounted(fetchOrders)
+const orders = computed(() => ordersStore.orders)
+const loading = computed(() => ordersStore.loading)
 
 const formatDate = (date) =>
   new Date(date).toLocaleString()
 </script>
+
+
 
 
 <style scoped>
