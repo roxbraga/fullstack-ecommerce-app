@@ -13,6 +13,7 @@ import UserOrders from '../pages/UserOrders.vue'
 import AdminView from '../components/AdminView.vue'
 import AdminDashboard from '../pages/AdminDashboard.vue'
 import CreateProduct from '../pages/CreateProduct.vue'
+import UpdateProduct from '../pages/UpdateProduct.vue'
 import ProductsList from '../pages/ProductList.vue'
 import OrdersAll from '../pages/OrdersAll.vue'
 import OrdersAbandoned from '../pages/OrdersAbandoned.vue'
@@ -35,7 +36,8 @@ const routes = [
     children: [
       { path: '', component: AdminDashboard },
       { path: 'create-product', component: CreateProduct },
-      { path: 'products-list', component: ProductsList },
+      { path: 'products', component: ProductsList },
+      { path: 'products/:id/edit', component: UpdateProduct },
       { path: 'orders/all', component: OrdersAll },
       { path: 'orders/abandoned', component: OrdersAbandoned }
     ]

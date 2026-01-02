@@ -1,16 +1,95 @@
+<template>
+  <div class="container py-5">
+    <h2 class="page-title mb-4">Update Product</h2>
+
+    <div v-if="loading" class="text-center text-muted">
+      Loading product...
+    </div>
+
+    <form v-else class="form-card" @submit.prevent="submit">
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input
+          v-model="form.name"
+          type="text"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Description</label>
+        <textarea
+          v-model="form.description"
+          rows="4"
+          class="form-control"
+          required
+        />
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Price</label>
+          <input
+            v-model.number="form.price"
+            type="number"
+            class="form-control"
+            required
+          />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Category</label>
+          <input
+            v-model="form.category"
+            type="text"
+            class="form-control"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-check mb-4">
+        <input
+          v-model="form.isActive"
+          class="form-check-input"
+          type="checkbox"
+          id="isActive"
+        />
+        <label class="form-check-label" for="isActive">
+          Active
+        </label>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-warning">
+          Save Changes
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          @click="router.push('/admin/products')"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
+
 <script setup>
-import axios from 'axios'
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useGlobalStore } from '../stores/global.js'
+import { ref, reactive, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useProductsStore } from '../stores/products'
 
-const userStore = useUserStore()
-const isAdmin = computed(() => userStore.role === 'admin' && userStore.isLoggedIn)
+const route = useRoute()
+const router = useRouter()
+const productsStore = useProductsStore()
 
-// Products state
-const products = ref([])
+const loading = ref(true)
+const productId = route.params.id
 
-// Editing state
-const editingProduct = ref(null)
 const form = reactive({
   name: '',
   description: '',
@@ -19,63 +98,79 @@ const form = reactive({
   isActive: true
 })
 
-// Fetch products from backend
-async function fetchProducts() {
+let originalProduct = null
+
+onMounted(async () => {
   try {
-    const res = await axios.get('http://localhost:5000/api/products')
-    products.value = res.data
-  } catch (err) {
-    console.error('Failed to fetch products:', err)
+    const product = await productsStore.getProductById(productId)
+    originalProduct = product
+
+    form.name = product.name
+    form.description = product.description
+    form.price = product.price
+    form.category = product.category
+    form.isActive = product.isActive
+  } catch {
+    router.push('/admin/products')
+  } finally {
+    loading.value = false
   }
-}
+})
 
-// Select product to edit
-function editProduct(product) {
-  editingProduct.value = product
-  form.name = product.name
-  form.description = product.description
-  form.price = product.price
-  form.category = product.category
-  form.isActive = product.isActive
-}
+const submit = async () => {
+  const updates = {}
 
-// Cancel editing
-function cancelEdit() {
-  editingProduct.value = null
-}
+  if (form.name !== originalProduct.name) updates.name = form.name
+  if (form.description !== originalProduct.description) updates.description = form.description
+  if (form.price !== originalProduct.price) updates.price = form.price
+  if (form.category !== originalProduct.category) updates.category = form.category
+  if (form.isActive !== originalProduct.isActive) updates.isActive = form.isActive
 
-// Update product via PATCH
-async function updateProduct() {
-  if (!editingProduct.value) return
+  if (!Object.keys(updates).length) {
+    alert('No changes detected')
+    return
+  }
 
   try {
-    // Only send changed fields
-    const updates = {}
-    if (form.name !== editingProduct.value.name) updates.name = form.name
-    if (form.description !== editingProduct.value.description) updates.description = form.description
-    if (form.price !== editingProduct.value.price) updates.price = form.price
-    if (form.category !== editingProduct.value.category) updates.category = form.category
-    if (form.isActive !== editingProduct.value.isActive) updates.isActive = form.isActive
-
-    const res = await axios.patch(
-      `http://localhost:5000/api/products/${editingProduct.value._id}`,
-      updates
-    )
-
-    // Update local table
-    const index = products.value.findIndex(p => p._id === editingProduct.value._id)
-    if (index !== -1) products.value[index] = res.data.product
-
-    editingProduct.value = null
-    alert('Product updated successfully!')
+    await productsStore.updateProduct(productId, updates)
+    alert('Product updated successfully')
+    router.push('/admin/products')
   } catch (err) {
-    console.error('Failed to update product:', err)
+    console.error(err)
     alert('Failed to update product')
   }
 }
-
-// Fetch products on mount
-onMounted(() => {
-  if (isAdmin.value) fetchProducts()
-})
 </script>
+
+<style scoped>
+.container {
+  max-width: 700px;
+}
+
+.page-title {
+  text-align: center;
+  color: #ffd84d;
+}
+
+.form-card {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2rem;
+  border-radius: 18px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.form-label {
+  color: #f8f9fa;
+}
+
+.form-control {
+  background: #1c1f22;
+  color: white;
+  border: 1px solid #333;
+}
+
+.form-control:focus {
+  border-color: #ffc107;
+  box-shadow: none;
+}
+</style>

@@ -5,6 +5,7 @@ export const useProductsStore = defineStore('products', {
   state: () => ({
     products: []
   }),
+
   actions: {
     async fetchAllProducts() {
       try {
@@ -15,25 +16,40 @@ export const useProductsStore = defineStore('products', {
         this.products = []
       }
     },
+
     async addProduct(newProduct) {
-      try {
-        const res = await api.post('/product', newProduct)
-        
-        this.products.push(res.data.product)
-      } catch (err) {
-        console.error('Failed to add product:', err)
-        throw err
+      const res = await api.post('/product', newProduct)
+      this.products.push(res.data.product)
+    },
+
+    async updateProduct(id, updates) {
+      const res = await api.patch(`/product/${id}`, updates)
+
+      const index = this.products.findIndex(p => p._id === id)
+      if (index !== -1) {
+        this.products[index] = res.data.product
+      }
+
+      return res.data.product
+    },
+
+    async toggleActive(product) {
+      const res = await api.patch(`/product/${product._id}`, {
+        isActive: !product.isActive
+      })
+
+      const index = this.products.findIndex(p => p._id === product._id)
+      if (index !== -1) {
+        this.products[index] = res.data.product
       }
     },
-    async toggleActive(product) {
-      try {
-        const res = await api.patch(`/product/${product._id}`, { isActive: !product.isActive })
-        const index = this.products.findIndex(p => p._id === product._id)
-        if (index !== -1) this.products[index] = res.data.product
-      } catch (err) {
-        console.error('Failed to toggle product status:', err)
-        alert('Failed to update product status')
-      }
+
+    async getProductById(id) {
+      const local = this.products.find(p => p._id === id)
+      if (local) return local
+
+      const res = await api.get(`/product/${id}`)
+      return res.data
     }
   }
 })

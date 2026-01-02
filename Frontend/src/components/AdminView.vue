@@ -18,10 +18,11 @@
         </li>
 
         <li>
-          <router-link class="sidebar-item" to="/admin/products-list">
+          <router-link class="sidebar-item" to="/admin/products">
             Product List
           </router-link>
         </li>
+        
 
         <!-- ORDERS -->
         <li>

@@ -1,18 +1,18 @@
 <template>
-  <div class="container py-5" v-if="isAdmin">
+  <div class="container py-5">
     <h2 class="page-title mb-4">Product List</h2>
 
     <div class="table-card" v-if="productsStore.products.length">
       <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle text-center mb-0">
-          <thead class="table-head">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead class="table-head text-center">
             <tr>
               <th>Name</th>
               <th>Description</th>
               <th>Price</th>
               <th>Category</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th class="text-center">Actions</th>
             </tr>
           </thead>
 
@@ -20,35 +20,49 @@
             <tr
               v-for="product in productsStore.products"
               :key="product._id"
+              class="table-row"
             >
-              <td class="fw-semibold">
+              <!-- NAME -->
+              <td class="fw-semibold text-nowrap">
                 {{ product.name }}
               </td>
 
+              <!-- DESCRIPTION -->
               <td class="product-description">
                 {{ product.description }}
               </td>
 
-              <td class="fw-semibold">
+              <!-- PRICE -->
+              <td class="price">
                 ₱{{ product.price }}
               </td>
 
-              <td>
+              <!-- CATEGORY -->
+              <td class="text-muted">
                 {{ product.category }}
               </td>
 
-              <td>
+              <!-- STATUS -->
+              <td class="text-center">
                 <span
-                  class="badge"
-                  :class="product.isActive ? 'bg-success' : 'bg-secondary'"
+                  class="status-pill"
+                  :class="product.isActive ? 'active' : 'inactive'"
                 >
                   {{ product.isActive ? 'Active' : 'Inactive' }}
                 </span>
               </td>
 
-              <td>
+              <!-- ACTIONS -->
+              <td class="actions">
+                <router-link
+                  class="btn btn-warning btn-sm w-100 mb-2"
+                  :to="`/admin/products/${product._id}/edit`"
+                >
+                  Edit
+                </router-link>
+
                 <button
-                  class="btn btn-sm"
+                  class="btn btn-sm w-100"
                   :class="product.isActive
                     ? 'btn-outline-danger'
                     : 'btn-outline-success'"
@@ -63,39 +77,27 @@
       </div>
     </div>
 
+    <!-- EMPTY STATE -->
     <div v-else class="empty-state text-center">
       <p>No products found.</p>
     </div>
   </div>
-
-  <div v-else class="text-center mt-5 text-white">
-    <h3>Access Denied</h3>
-    <p>You must be an admin to access this page.</p>
-  </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue'
-import { useGlobalStore } from '../stores/global'
+import { onMounted } from 'vue'
 import { useProductsStore } from '../stores/products'
 
-const store = useGlobalStore()
 const productsStore = useProductsStore()
 
-const isAdmin = computed(
-  () => store.isLoggedIn && store.user.isAdmin
-)
-
 onMounted(() => {
-  if (isAdmin.value) {
-    productsStore.fetchAllProducts()
-  }
+  productsStore.fetchAllProducts()
 })
 </script>
 
 <style scoped>
 .container {
-  max-width: 1000px;
+  max-width: 1100px;
 }
 
 /* TITLE */
@@ -109,38 +111,73 @@ onMounted(() => {
 .table-card {
   background: linear-gradient(
     135deg,
-    rgba(33, 37, 41, 0.75),
-    rgba(18, 18, 18, 0.65)
+    rgba(33, 37, 41, 0.8),
+    rgba(18, 18, 18, 0.7)
   );
-  backdrop-filter: blur(6px);
-  border-radius: 18px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
   overflow: hidden;
 }
 
 /* HEADER */
-.table-head {
-  background: linear-gradient(135deg, #2c2f33, #1c1f22);
+.table-head th {
+  background: linear-gradient(135deg, #2b2f33, #1c1f22);
+  color: #f8f9fa;
+  font-weight: 600;
+  padding: 1rem;
 }
 
-/* 🔥 ROW DIVIDER */
-.table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+/* ROW */
+.table-row {
+  transition: background 0.2s ease;
 }
 
-.table tbody tr:last-child {
-  border-bottom: none;
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.03);
 }
 
 /* DESCRIPTION */
 .product-description {
-  color: #f8f9fa;
+  max-width: 380px;
+  color: #dee2e6;
   font-size: 0.9rem;
   line-height: 1.5;
-  max-width: 360px;
-  white-space: normal;
-  word-break: break-word;
-  opacity: 0.95;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* PRICE */
+.price {
+  font-family: monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* STATUS */
+.status-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pill.active {
+  background: #198754;
+  color: #fff;
+}
+
+.status-pill.inactive {
+  background: #6c757d;
+  color: #fff;
+}
+
+/* ACTIONS */
+.actions {
+  min-width: 140px;
 }
 
 /* EMPTY */
@@ -150,9 +187,9 @@ onMounted(() => {
 }
 
 /* MOBILE */
-@media (max-width: 576px) {
-  .page-title {
-    font-size: 2.1rem;
+@media (max-width: 768px) {
+  .product-description {
+    max-width: 240px;
   }
 }
 </style>
