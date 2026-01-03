@@ -12,6 +12,9 @@ router.get('/all', verify, verifyAdmin, orderController.getAllOrders)
 router.get('/abandoned', verify, verifyAdmin, orderController.getAbandonedOrders)
 router.get('/draft', verify, verifyAdmin, orderController.getDraftOrders)
 router.patch('/:id', verify, verifyAdmin, orderController.updateOrderStatus)
+router.delete('/:id', verify, verifyAdmin, orderController.deleteOrder)
+router.patch('/:id/cancel', verify, orderController.cancelOrder)
+
 
 module.exports = router
 

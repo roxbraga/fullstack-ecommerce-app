@@ -13,5 +13,7 @@ router.patch('/:id', verify, verifyAdmin, productController.updateProduct);
 router.patch('/:id/archive', verify, verifyAdmin, productController.archiveProduct);
 router.post("/search/price-range", productController.searchByPriceRange);
 router.get("/specific/:id", productController.getProduct);
+router.delete('/:id', verify, verifyAdmin, productController.deleteProduct)
+router.post('/delete-many', verify, verifyAdmin, productController.deleteManyProducts)
 
 module.exports = router;

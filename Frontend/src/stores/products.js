@@ -3,23 +3,65 @@ import api from '../api'
 
 export const useProductsStore = defineStore('products', {
   state: () => ({
-    products: []
+    products: [],
+    loading: false
   }),
 
+  getters: {
+    /* ================= USER / CATALOG ================= */
+
+    activeProducts: (state) =>
+      state.products.filter(p => p.isActive && p.stock > 0)
+  },
+
   actions: {
+    /* ================= USER / PUBLIC ================= */
+
+    async fetchActiveProducts() {
+      this.loading = true
+      try {
+        const res = await api.get('/product')
+        this.products = res.data
+      } catch (err) {
+        console.error('Failed to fetch active products:', err)
+        this.products = []
+      } finally {
+        this.loading = false
+      }
+    },
+
+    // AFTER CHECKOUT (refresh stock + availability)
+    async refreshProducts() {
+      const res = await api.get('/product')
+      this.products = res.data
+    },
+
+    async getProductById(id) {
+      const local = this.products.find(p => p._id === id)
+      if (local) return local
+
+      const res = await api.get(`/product/specific/${id}`)
+      return res.data
+    },
+
+    /* ================= ADMIN ONLY ================= */
+
     async fetchAllProducts() {
+      this.loading = true
       try {
         const res = await api.get('/product/all')
         this.products = res.data
       } catch (err) {
-        console.error('Failed to fetch products:', err)
+        console.error('Failed to fetch all products:', err)
         this.products = []
+      } finally {
+        this.loading = false
       }
     },
 
     async addProduct(newProduct) {
       const res = await api.post('/product', newProduct)
-      this.products.push(res.data.product)
+      this.products.unshift(res.data.product)
     },
 
     async updateProduct(id, updates) {
@@ -44,12 +86,22 @@ export const useProductsStore = defineStore('products', {
       }
     },
 
-    async getProductById(id) {
-      const local = this.products.find(p => p._id === id)
-      if (local) return local
+    
 
-      const res = await api.get(`/product/${id}`)
-      return res.data
+    // DELETE SINGLE PRODUCT
+    async deleteProduct(id) {
+      await api.delete(`/product/${id}`)
+
+      // remove from local state
+      this.products = this.products.filter(p => p._id !== id)
+    },
+
+    // DELETE MULTIPLE PRODUCTS
+    async deleteMany(ids) {
+      await api.post('/product/delete-many', { ids })
+
+      // remove locally
+      this.products = this.products.filter(p => !ids.includes(p._id))
     }
   }
 })

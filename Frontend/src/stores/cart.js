@@ -23,12 +23,17 @@ export const useCartStore = defineStore('cart', {
   },
 
   actions: {
+    /* LOAD CART */
     async fetchCart() {
       this.loading = true
       try {
         const { data } = await api.get('/cart')
+
         this.items = data.items.map(i => ({
-          ...i.productId,
+          _id: i.productId._id,
+          name: i.productId.name,
+          price: i.productId.price,
+          stock: i.productId.stock,
           quantity: i.quantity,
           selected: i.selected
         }))
@@ -37,32 +42,44 @@ export const useCartStore = defineStore('cart', {
       }
     },
 
+    /* ADD */
     async addToCart(productId, quantity = 1) {
       await api.post('/cart/add', { productId, quantity })
       await this.fetchCart()
     },
 
+    /* UPDATE (qty / selected) */
     async updateItem(productId, payload) {
       const { data } = await api.patch('/cart/update', {
         productId,
         ...payload
       })
+
       this.items = data.items.map(i => ({
-        ...i.productId,
+        _id: i.productId._id,
+        name: i.productId.name,
+        price: i.productId.price,
+        stock: i.productId.stock,
         quantity: i.quantity,
         selected: i.selected
       }))
     },
 
+    /* REMOVE ONE */
     async removeFromCart(productId) {
       const { data } = await api.delete(`/cart/remove/${productId}`)
+
       this.items = data.items.map(i => ({
-        ...i.productId,
+        _id: i.productId._id,
+        name: i.productId.name,
+        price: i.productId.price,
+        stock: i.productId.stock,
         quantity: i.quantity,
         selected: i.selected
       }))
     },
 
+    /* CLEAR AFTER CHECKOUT */
     async clearCart() {
       await api.delete('/cart/clear')
       this.items = []

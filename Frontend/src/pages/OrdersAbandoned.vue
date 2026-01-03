@@ -1,37 +1,79 @@
 <template>
   <div class="container py-5" v-if="isAdmin">
-    <h2 class="text-center mb-4 text-white">Abandoned Orders</h2>
+    <h2 class="text-center mb-4 text-warning">Abandoned Orders</h2>
 
-    <div class="table-responsive">
-      <table class="table table-striped table-dark text-center">
+    <div v-if="ordersStore.loading" class="text-center text-muted">
+      Loading abandoned orders...
+    </div>
+
+    <div v-else-if="ordersStore.orders.length" class="table-responsive">
+      <table class="table table-striped table-dark align-middle text-center">
         <thead>
           <tr>
             <th>Order ID</th>
             <th>Customer</th>
-            <th>Products</th>
-            <th>Total Price</th>
+            <th>Email</th>
+            <th class="text-start">Products</th>
+            <th>Total</th>
             <th>Date</th>
+            <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="order in orders" :key="order._id">
-            <td>{{ order._id }}</td>
-            <td>{{ order.customerName }}</td>
-            <td>
+          <tr v-for="order in ordersStore.orders" :key="order._id">
+            <td class="small">{{ order._id }}</td>
+
+            <td>{{ order.userId?.name || 'N/A' }}</td>
+            <td>{{ order.userId?.email || 'N/A' }}</td>
+
+            <!-- PRODUCTS -->
+            <td class="text-start">
               <ul class="list-unstyled mb-0">
-                <li v-for="item in order.products" :key="item._id">
-                  {{ item.name }} x{{ item.quantity }}
+                <li v-for="item in order.items" :key="item._id">
+                  {{ item.productId?.name || 'Deleted product' }}
+                  × {{ item.quantity }}
                 </li>
               </ul>
             </td>
-            <td>${{ order.totalPrice }}</td>
-            <td>{{ new Date(order.createdAt).toLocaleString() }}</td>
+
+            <!-- TOTAL -->
+            <td class="text-warning fw-semibold">
+              ₱{{ order.totalPrice.toLocaleString() }}
+            </td>
+
+            <!-- DATE -->
+            <td class="small">
+              {{ new Date(order.createdAt).toLocaleString() }}
+            </td>
+
+            <!-- ACTIONS -->
+            <td class="d-flex gap-2 justify-content-center">
+              <button
+                class="btn btn-sm btn-outline-warning"
+                @click="restore(order._id)"
+              >
+                Mark Pending
+              </button>
+
+              <button
+                class="btn btn-sm btn-danger"
+                @click="remove(order._id)"
+              >
+                Delete
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <p v-else class="text-center text-muted">
+      No abandoned orders found.
+    </p>
   </div>
 
+  <!-- ACCESS DENIED -->
   <div v-else class="text-center mt-5 text-white">
     <h3>Access Denied</h3>
     <p>You must be an admin to access this page.</p>
@@ -39,36 +81,45 @@
 </template>
 
 <script setup>
-import axios from 'axios'
-import { ref, computed, onMounted } from 'vue'
-import { useGlobalStore } from '../stores/global.js'
+import { onMounted, computed } from 'vue'
+import { useOrdersStore } from '../stores/orders'
+import { useGlobalStore } from '../stores/global'
+import { Notyf } from 'notyf'
 
-const userStore = useUserStore()
-const isAdmin = computed(() => userStore.role === 'admin' && userStore.isLoggedIn)
+const ordersStore = useOrdersStore()
+const globalStore = useGlobalStore()
+const notyf = new Notyf()
 
-const orders = ref([])
+const isAdmin = computed(
+  () => globalStore.isLoggedIn && globalStore.user?.isAdmin
+)
 
-// Fetch abandoned orders
-async function fetchAbandonedOrders() {
-  try {
-    const res = await axios.get('http://localhost:5000/api/orders?status=abandoned')
-    orders.value = res.data
-  } catch (err) {
-    console.error('Failed to fetch abandoned orders:', err)
+onMounted(async () => {
+  if (isAdmin.value) {
+    await ordersStore.fetchAbandonedOrders()
   }
+})
+
+const restore = async (orderId) => {
+  await ordersStore.updateOrderStatus(orderId, 'pending')
+  notyf.success('Order marked as pending')
 }
 
-onMounted(() => {
-  if (isAdmin.value) fetchAbandonedOrders()
-})
+const remove = async (orderId) => {
+  if (!confirm('Delete this abandoned order?')) return
+  await ordersStore.deleteOrder(orderId)
+  notyf.success('Order deleted')
+}
 </script>
 
 <style scoped>
 h2 {
-  font-family: 'League Script', cursive;
-  color: #fff200;
+  font-size: 2.4rem;
+  
 }
-.table td, .table th {
+
+.table td,
+.table th {
   vertical-align: middle;
 }
 </style>

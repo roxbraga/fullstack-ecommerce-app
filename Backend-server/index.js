@@ -5,7 +5,7 @@ const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
 require('dotenv').config();
-require('./passport'); // Passport Google strategy
+require('./passport'); 
 
 // [SECTION] Routes
 const userRoutes = require("./routes/user");

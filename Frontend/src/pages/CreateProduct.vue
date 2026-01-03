@@ -138,7 +138,7 @@ async function addProduct() {
       else form[key] = ''
     })
 
-    router.push('/admin/products-list')
+    router.push('/admin/products')
   } catch (err) {
     console.error(err)
     alert('Failed to add product.')

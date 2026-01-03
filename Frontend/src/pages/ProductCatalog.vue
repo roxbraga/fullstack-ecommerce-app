@@ -1,115 +1,233 @@
 <template>
   <div class="container py-5">
-    <h2 class="text-center mb-4 text-white">Product Catalog</h2>
+    <h2 class="page-title mb-4">Product Catalog</h2>
 
-    <!-- Products Grid -->
-    <div class="row">
-      <div
-        v-for="product in products"
-        :key="product._id"
-        class="col-md-4 mb-4"
-      >
-        <div class="card h-100 bg-dark text-white">
-          <div class="card-body">
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">{{ product.description.slice(0, 60) }}...</p>
-            <p class="card-text"><strong>Price:</strong> ${{ product.price }}</p>
-            <p class="card-text"><strong>Category:</strong> {{ product.category }}</p>
-            <button
-              class="btn btn-warning"
-              @click="showDetails(product)"
+    <div class="table-card" v-if="productsStore.products.length">
+      <div class="table-responsive">
+        <table class="table table-dark table-hover align-middle mb-0">
+          <thead class="table-head text-center">
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Category</th>
+              <th>Status</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr
+              v-for="product in productsStore.products"
+              :key="product._id"
+              class="table-row"
             >
-              View Details
-            </button>
-          </div>
-        </div>
+              <!-- NAME -->
+              <td class="fw-semibold text-nowrap">
+                {{ product.name }}
+              </td>
+
+              <!-- DESCRIPTION -->
+              <td class="product-description">
+                <p
+                  class="desc-text"
+                  :class="{ expanded: expandedDesc === product._id }"
+                >
+                  {{ product.description }}
+                </p>
+
+                <button
+                  v-if="product.description && product.description.length > 120"
+                  class="btn btn-link p-0 desc-toggle"
+                  @click="toggleDesc(product._id)"
+                >
+                  {{ expandedDesc === product._id ? 'View less' : 'View more' }}
+                </button>
+              </td>
+
+              <!-- PRICE -->
+              <td class="price">
+                ₱{{ product.price }}
+              </td>
+
+              <!-- CATEGORY -->
+              <td class="text-white">
+                {{ product.category }}
+              </td>
+
+              <!-- STATUS -->
+              <td class="text-center">
+                <span
+                  class="status-pill"
+                  :class="product.isActive ? 'active' : 'inactive'"
+                >
+                  {{ product.isActive ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <!-- ACTIONS -->
+              <td class="actions">
+                <router-link
+                  class="btn btn-warning btn-sm w-100 mb-2"
+                  :to="`/admin/products/${product._id}/edit`"
+                >
+                  Edit
+                </router-link>
+
+                <button
+                  class="btn btn-sm w-100"
+                  :class="product.isActive
+                    ? 'btn-outline-danger'
+                    : 'btn-outline-success'"
+                  @click="productsStore.toggleActive(product)"
+                >
+                  {{ product.isActive ? 'Deactivate' : 'Activate' }}
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Product Details Modal -->
-    <div
-      class="modal fade"
-      id="productModal"
-      tabindex="-1"
-      aria-labelledby="productModalLabel"
-      aria-hidden="true"
-      ref="modalRef"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content bg-dark text-white">
-          <div class="modal-header">
-            <h5 class="modal-title" id="productModalLabel">{{ selectedProduct.name }}</h5>
-            <button type="button" class="btn-close" @click="closeModal"></button>
-          </div>
-          <div class="modal-body">
-            <p><strong>Description:</strong> {{ selectedProduct.description }}</p>
-            <p><strong>Price:</strong> ${{ selectedProduct.price }}</p>
-            <p><strong>Category:</strong> {{ selectedProduct.category }}</p>
-            <p><strong>Status:</strong> {{ selectedProduct.isActive ? 'Available' : 'Unavailable' }}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeModal">Close</button>
-          </div>
-        </div>
-      </div>
+    <!-- EMPTY STATE -->
+    <div v-else class="empty-state text-center">
+      <p>No products found.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import axios from 'axios'
 import { ref, onMounted } from 'vue'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'
+import { useProductsStore } from '../stores/products'
 
-const products = ref([])
-const selectedProduct = ref({})
+const productsStore = useProductsStore()
+const expandedDesc = ref(null)
 
-// Bootstrap modal reference
-const modalRef = ref(null)
-let bsModal = null
-
-// Fetch all active products
-async function fetchProducts() {
-  try {
-    const res = await axios.get('http://localhost:5000/api/products?isActive=true')
-    products.value = res.data
-  } catch (err) {
-    console.error('Failed to fetch products:', err)
-  }
-}
-
-// Show product details
-function showDetails(product) {
-  selectedProduct.value = product
-  if (!bsModal) {
-    bsModal = new bootstrap.Modal(modalRef.value)
-  }
-  bsModal.show()
-}
-
-// Close modal
-function closeModal() {
-  if (bsModal) bsModal.hide()
+const toggleDesc = (id) => {
+  expandedDesc.value = expandedDesc.value === id ? null : id
 }
 
 onMounted(() => {
-  fetchProducts()
+  productsStore.fetchAllProducts()
 })
 </script>
 
 <style scoped>
-h2 {
-  font-family: 'League Script', cursive;
-  color: #fff200;
+.container {
+  max-width: 1100px;
 }
-.card {
-  cursor: pointer;
+
+/* TITLE */
+.page-title {
+  font-size: 2.6rem;
+  text-align: center;
+  color: #ffd84d;
 }
-.btn-close {
-  background: none;
-  border: none;
+
+/* CARD */
+.table-card {
+  background: linear-gradient(
+    135deg,
+    rgba(33, 37, 41, 0.85),
+    rgba(18, 18, 18, 0.75)
+  );
+  backdrop-filter: blur(8px);
+  border-radius: 20px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* HEADER */
+.table-head th {
+  background: linear-gradient(135deg, #2b2f33, #1c1f22);
+  color: #f8f9fa;
+  font-weight: 600;
+  padding: 1rem;
+}
+
+/* ROW */
+.table-row {
+  transition: background 0.2s ease;
+}
+
+.table-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* DESCRIPTION */
+.product-description {
+  max-width: 360px;
+  vertical-align: top;
+}
+
+.desc-text {
+  margin: 0;
+  color: #dee2e6;
+  font-size: 0.9rem;
+  line-height: 1.5;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.desc-text.expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.desc-toggle {
+  font-size: 0.75rem;
+  color: #ffc107;
+  text-decoration: none;
+}
+
+.desc-toggle:hover {
+  text-decoration: underline;
+}
+
+/* PRICE */
+.price {
+  font-family: monospace;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* STATUS */
+.status-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pill.active {
+  background: #198754;
   color: #fff;
-  font-size: 1.2rem;
+}
+
+.status-pill.inactive {
+  background: #6c757d;
+  color: #fff;
+}
+
+/* ACTIONS */
+.actions {
+  min-width: 140px;
+}
+
+/* EMPTY */
+.empty-state {
+  color: #ccc;
+  font-style: italic;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .product-description {
+    max-width: 220px;
+  }
 }
 </style>

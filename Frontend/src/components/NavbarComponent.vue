@@ -247,12 +247,12 @@ const logout = () => {
     padding-right: 0.25rem;
   }
 
-  /* prevent greeting push */
+  
   .greet-name {
     max-width: 90px;
   }
 
-  /* hide "Hi," on very small screens */
+  
   .greet-hi {
     display: none;
   }

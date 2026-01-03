@@ -14,32 +14,47 @@
           :key="order._id"
           class="order-card mb-4"
         >
+          <!-- HEADER -->
           <div class="order-header mb-2">
-            <strong>Order #{{ order._id }}</strong>
+            <strong class="order-id">
+              Order #{{ order._id }}
+            </strong>
             <span class="order-date">
               {{ formatDate(order.createdAt) }}
             </span>
           </div>
 
-          <ul class="list-unstyled mb-3">
+          <!-- ITEMS -->
+          <ul class="list-unstyled order-items mb-3">
             <li
               v-for="item in order.items"
-              :key="item.productId"
-              class="d-flex justify-content-between"
+              :key="item._id"
+              class="order-item"
             >
-              <span>{{ item.name }} × {{ item.quantity }}</span>
-              <span>₱{{ item.price * item.quantity }}</span>
+              <span class="item-name">
+                {{ item.productId?.name || 'Deleted product' }}
+                × {{ item.quantity }}
+              </span>
+
+              <span class="item-price">
+                ₱{{ ((item.productId?.price || 0) * item.quantity).toLocaleString() }}
+              </span>
             </li>
           </ul>
 
           <hr />
 
-          <div class="d-flex justify-content-between align-items-center">
-            <span class="badge bg-warning text-dark">
+          <!-- FOOTER -->
+          <div class="order-footer">
+            <span
+              class="status-pill"
+              :class="order.status"
+            >
               {{ order.status.toUpperCase() }}
             </span>
+
             <strong class="text-warning">
-              ₱{{ order.totalPrice }}
+              ₱{{ order.totalPrice.toLocaleString() }}
             </strong>
           </div>
         </div>
@@ -69,9 +84,6 @@ const loading = computed(() => ordersStore.loading)
 const formatDate = (date) =>
   new Date(date).toLocaleString()
 </script>
-
-
-
 
 <style scoped>
 /* PAGE */
@@ -133,6 +145,41 @@ const formatDate = (date) =>
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
+}
+
+/* STATUS COLORS */
+.status-pill {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+/* STATUS VARIANTS */
+.status-pill.pending {
+  background: #ffc107;
+  color: #212529;
+}
+
+.status-pill.completed {
+  background: #198754;
+  color: #fff;
+}
+
+.status-pill.cancelled {
+  background: #dc3545;
+  color: #fff;
+}
+
+.status-pill.abandoned {
+  background: #6c757d;
+  color: #fff;
+}
+
+.status-pill.draft {
+  background: #0dcaf0;
+  color: #212529;
 }
 
 /* MOBILE */

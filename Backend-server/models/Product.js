@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema(
   {
@@ -27,9 +27,10 @@ const productSchema = new mongoose.Schema(
 
     image: {
       type: String,
-      default: '' 
+      default: ''
     },
 
+    // 🔥 CURRENT AVAILABLE STOCK
     stock: {
       type: Number,
       required: true,
@@ -37,9 +38,10 @@ const productSchema = new mongoose.Schema(
       default: 0
     },
 
-    quantity: {
+    // 🔥 TOTAL ORDERS FOR THIS PRODUCT (ACCUMULATED)
+    totalOrders: {
       type: Number,
-      default: 0 
+      default: 0
     },
 
     isActive: {
@@ -50,6 +52,6 @@ const productSchema = new mongoose.Schema(
   {
     timestamps: true
   }
-);
+)
 
-module.exports = mongoose.model('Product', productSchema);
+module.exports = mongoose.model('Product', productSchema)

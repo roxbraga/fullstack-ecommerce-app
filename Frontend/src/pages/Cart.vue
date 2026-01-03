@@ -4,6 +4,7 @@
 
       <h2 class="text-warning mb-4 text-center">My Cart</h2>
 
+      <!-- SELECT ALL -->
       <div v-if="cart.items.length" class="mb-3">
         <input
           type="checkbox"
@@ -13,6 +14,7 @@
         <span class="ms-2">Select all</span>
       </div>
 
+      <!-- CART ITEMS -->
       <div
         v-for="item in cart.items"
         :key="item._id"
@@ -26,7 +28,7 @@
 
         <div class="flex-grow-1 ms-3">
           <h5 class="mb-1">{{ item.name }}</h5>
-          <p class="mb-1 text-warning">₱{{ item.price }}</p>
+          <p class="mb-1 text-warning">₱{{ item.price.toLocaleString() }}</p>
 
           <div class="d-flex gap-2 align-items-center">
             <button
@@ -60,11 +62,14 @@
         </div>
       </div>
 
+      <!-- TOTAL + CHECKOUT -->
       <div v-if="cart.selectedItems.length">
         <hr />
         <h4 class="text-end">
           Total:
-          <span class="text-warning">₱{{ cart.totalPrice }}</span>
+          <span class="text-warning">
+            ₱{{ cart.totalPrice.toLocaleString() }}
+          </span>
         </h4>
 
         <button
@@ -87,12 +92,14 @@
 import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
+import { useOrdersStore } from '../stores/orders'
+import { useProductsStore } from '../stores/products'
 import api from '../api'
 import { Notyf } from 'notyf'
-import { useOrdersStore } from '../stores/orders'
 
-const ordersStore = useOrdersStore()
 const cart = useCartStore()
+const ordersStore = useOrdersStore()
+const productsStore = useProductsStore()
 const router = useRouter()
 const notyf = new Notyf()
 
@@ -126,13 +133,12 @@ const decrease = (item) => {
   }
 }
 
+/* 🔥 SINGLE CHECKOUT */
 const checkoutSingle = async (item) => {
   try {
     await api.post('/orders', {
       items: [{
         productId: item._id,
-        name: item.name,
-        price: item.price,
         quantity: item.quantity
       }],
       totalPrice: item.price * item.quantity
@@ -140,20 +146,21 @@ const checkoutSingle = async (item) => {
 
     await cart.removeFromCart(item._id)
     await ordersStore.refreshOrders()
+    await productsStore.refreshProducts() // 🔥 REACTIVE STOCK
+
     notyf.success('Item checked out!')
     router.push('/orders')
-  } catch {
-    notyf.error('Checkout failed')
+  } catch (err) {
+    notyf.error(err.response?.data?.message || 'Checkout failed')
   }
 }
 
+/* 🔥 MULTI CHECKOUT */
 const checkoutSelected = async () => {
   try {
     await api.post('/orders', {
       items: cart.selectedItems.map(item => ({
         productId: item._id,
-        name: item.name,
-        price: item.price,
         quantity: item.quantity
       })),
       totalPrice: cart.totalPrice
@@ -161,14 +168,15 @@ const checkoutSelected = async () => {
 
     await cart.clearCart()
     await ordersStore.refreshOrders()
+    await productsStore.refreshProducts() // 🔥 REACTIVE STOCK
+
     notyf.success('Checkout successful!')
     router.push('/orders')
-  } catch {
-    notyf.error('Checkout failed')
+  } catch (err) {
+    notyf.error(err.response?.data?.message || 'Checkout failed')
   }
 }
 </script>
-
 
 <style scoped>
 .page {

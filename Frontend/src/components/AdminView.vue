@@ -19,6 +19,11 @@
 
         <li>
           <router-link class="sidebar-item" to="/admin/products">
+            Product Catalog
+          </router-link>
+        </li>
+        <li>
+          <router-link class="sidebar-item" to="/admin/product-list">
             Product List
           </router-link>
         </li>
@@ -38,6 +43,11 @@
             <li>
               <router-link class="sidebar-subitem" to="/admin/orders/all">
                 All Orders
+              </router-link>
+            </li>
+            <li>
+              <router-link class="sidebar-subitem" to="/admin/orders/drafts">
+                Orders Draft
               </router-link>
             </li>
             <li>

@@ -23,6 +23,7 @@ export const useGlobalStore = defineStore('global', () => {
       user.email = data.email
       user.mobileNo = data.mobileNo
       user.isAdmin = data.isAdmin
+      user.token = localStorage.getItem('token')
 
       localStorage.setItem('role', data.isAdmin ? 'admin' : 'user')
     } catch {

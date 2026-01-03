@@ -14,12 +14,14 @@ import AdminView from '../components/AdminView.vue'
 import AdminDashboard from '../pages/AdminDashboard.vue'
 import CreateProduct from '../pages/CreateProduct.vue'
 import UpdateProduct from '../pages/UpdateProduct.vue'
+import ProductsCatalog from '../pages/ProductCatalog.vue'
 import ProductsList from '../pages/ProductList.vue'
 import OrdersAll from '../pages/OrdersAll.vue'
 import OrdersAbandoned from '../pages/OrdersAbandoned.vue'
+import OrdersDrafts from '../pages/OrdersDrafts.vue'
 
 const routes = [
-  { path: '/', component: Home },
+  { path: '/', component: Home, meta: {requiresAuth: true} },
   { path: '/login', component: Login },
   { path: '/register', component: Register },
 
@@ -36,10 +38,12 @@ const routes = [
     children: [
       { path: '', component: AdminDashboard },
       { path: 'create-product', component: CreateProduct },
-      { path: 'products', component: ProductsList },
+      { path: 'products', component: ProductsCatalog },
+      { path: 'product-list', component: ProductsList },
       { path: 'products/:id/edit', component: UpdateProduct },
       { path: 'orders/all', component: OrdersAll },
-      { path: 'orders/abandoned', component: OrdersAbandoned }
+      { path: 'orders/abandoned', component: OrdersAbandoned },
+      { path: 'orders/drafts', component: OrdersDrafts }
     ]
   }
 ]
@@ -57,9 +61,10 @@ router.beforeEach((to, from, next) => {
     return next('/login')
   }
 
-  if (to.meta.adminOnly && role !== 'admin') {
-    return next('/')
-  }
+  if (to.meta.adminOnly &&  role !== 'admin') {
+  return next('/login')
+}
+
 
   next()
 })

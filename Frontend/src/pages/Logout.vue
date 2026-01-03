@@ -1,17 +1,16 @@
 <template>
   <div class="logout-container">
-    <!-- A simple message confirming the logout action -->
     <p>You have been logged out successfully.</p>
     <p>Redirecting you to the login page...</p>
   </div>
 </template>
 
 <script setup>
-import { useRouter } from 'vue-router';  // Import the router to handle redirection
-import { useGlobalStore } from '../stores/global';  // Import the Pinia store for user data
+import { useRouter } from 'vue-router';  
+import { useGlobalStore } from '../stores/global';  
 
-const router = useRouter();  // Access the Vue Router instance
-const store = useGlobalStore();  // Access the global store
+const router = useRouter();  
+const store = useGlobalStore();  
 
 // Function to handle the logout process
 const logout = () => {
@@ -23,8 +22,8 @@ const logout = () => {
 
   // Redirect to the login page
   setTimeout(() => {
-    router.replace('/login');  // After a brief delay, redirect to login page
-  }, 1000);  // Wait for 1 second before redirecting (you can adjust this if needed)
+    router.replace('/login');  
+  }, 1000);  
 };
 
 // Call the logout function as soon as the component is mounted

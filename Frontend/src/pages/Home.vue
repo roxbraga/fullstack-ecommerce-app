@@ -91,18 +91,7 @@ onMounted(fetchProducts)
 </script>
 
 <style scoped>
-.user-root {
-  min-height: 100vh;
-  background: url('../assets/rox09.jpg') center / cover no-repeat;
-  position: relative;
-}
 
-.user-root::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-}
 
 .container {
   position: relative;
@@ -125,7 +114,13 @@ onMounted(fetchProducts)
   color: #fff;
   text-align: center;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.7);
 }
 
 /* IMAGE */

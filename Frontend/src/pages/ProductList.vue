@@ -1,94 +1,66 @@
 <template>
   <div class="container py-5">
-    <h2 class="page-title mb-4">Product List</h2>
+    <h2 class="board-title mb-4 text-center">Available Products</h2>
 
-    <div class="table-card" v-if="productsStore.products.length">
-      <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle mb-0">
-          <thead class="table-head text-center">
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th class="text-center">Actions</th>
-            </tr>
-          </thead>
+    <!-- ACTIVE PRODUCTS BOARD -->
+    <div v-if="activeProducts.length" class="row g-4">
+      <div
+        v-for="product in activeProducts"
+        :key="product._id"
+        class="col-12 col-sm-6 col-lg-4"
+      >
+        <div class="product-card h-100">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-warning mb-2">
+              {{ product.name }}
+            </h5>
 
-          <tbody>
-            <tr
-              v-for="product in productsStore.products"
-              :key="product._id"
-              class="table-row"
+            <p
+              class="card-desc"
+              :class="{ expanded: expandedDesc === product._id }"
             >
-              <!-- NAME -->
-              <td class="fw-semibold text-nowrap">
-                {{ product.name }}
-              </td>
+              {{ product.description }}
+            </p>
 
-              <!-- DESCRIPTION -->
-              <td class="product-description">
-                {{ product.description }}
-              </td>
+            <button
+              v-if="product.description && product.description.length > 120"
+              class="btn btn-link p-0 desc-toggle"
+              @click="toggleDesc(product._id)"
+            >
+              {{ expandedDesc === product._id ? 'View less' : 'View more' }}
+            </button>
 
-              <!-- PRICE -->
-              <td class="price">
-                ₱{{ product.price }}
-              </td>
-
-              <!-- CATEGORY -->
-              <td class="text-muted">
-                {{ product.category }}
-              </td>
-
-              <!-- STATUS -->
-              <td class="text-center">
-                <span
-                  class="status-pill"
-                  :class="product.isActive ? 'active' : 'inactive'"
-                >
-                  {{ product.isActive ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-
-              <!-- ACTIONS -->
-              <td class="actions">
-                <router-link
-                  class="btn btn-warning btn-sm w-100 mb-2"
-                  :to="`/admin/products/${product._id}/edit`"
-                >
-                  Edit
-                </router-link>
-
-                <button
-                  class="btn btn-sm w-100"
-                  :class="product.isActive
-                    ? 'btn-outline-danger'
-                    : 'btn-outline-success'"
-                  @click="productsStore.toggleActive(product)"
-                >
-                  {{ product.isActive ? 'Deactivate' : 'Activate' }}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+            <div class="card-meta mt-3">
+              <span class="price">₱{{ product.price }}</span>
+              <span class="category">{{ product.category }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- EMPTY STATE -->
-    <div v-else class="empty-state text-center">
-      <p>No products found.</p>
+    <!-- EMPTY -->
+    <div v-else class="empty-state text-center mt-5">
+      No active products available.
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useProductsStore } from '../stores/products'
 
 const productsStore = useProductsStore()
+const expandedDesc = ref(null)
+
+const toggleDesc = (id) => {
+  expandedDesc.value = expandedDesc.value === id ? null : id
+}
+
+
+const activeProducts = computed(() =>
+  productsStore.products.filter(product => product.isActive)
+)
 
 onMounted(() => {
   productsStore.fetchAllProducts()
@@ -96,52 +68,32 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.container {
-  max-width: 1100px;
-}
-
-/* TITLE */
-.page-title {
-  font-size: 2.6rem;
-  text-align: center;
+.board-title {
+  font-size: 2.4rem;
   color: #ffd84d;
 }
 
 /* CARD */
-.table-card {
-  background: linear-gradient(
-    135deg,
-    rgba(33, 37, 41, 0.8),
-    rgba(18, 18, 18, 0.7)
-  );
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
+.product-card {
+  background: linear-gradient(135deg, #1f1f1f, #141414);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* HEADER */
-.table-head th {
-  background: linear-gradient(135deg, #2b2f33, #1c1f22);
-  color: #f8f9fa;
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+}
+
+.card-title {
   font-weight: 600;
-  padding: 1rem;
 }
 
-/* ROW */
-.table-row {
-  transition: background 0.2s ease;
-}
-
-.table-row:hover {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-/* DESCRIPTION */
-.product-description {
-  max-width: 380px;
-  color: #dee2e6;
+.card-desc {
   font-size: 0.9rem;
+  color: #cfcfcf;
   line-height: 1.5;
 
   display: -webkit-box;
@@ -150,46 +102,41 @@ onMounted(() => {
   overflow: hidden;
 }
 
-/* PRICE */
-.price {
-  font-family: monospace;
-  font-weight: 600;
-  white-space: nowrap;
+.card-desc.expanded {
+  -webkit-line-clamp: unset;
 }
 
-/* STATUS */
-.status-pill {
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
+/* TOGGLE */
+.desc-toggle {
   font-size: 0.75rem;
+  color: #ffc107;
+  text-decoration: none;
+}
+
+.desc-toggle:hover {
+  text-decoration: underline;
+}
+
+/* META */
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #bbb;
+}
+
+.price {
   font-weight: 600;
-}
-
-.status-pill.active {
-  background: #198754;
   color: #fff;
 }
 
-.status-pill.inactive {
-  background: #6c757d;
-  color: #fff;
-}
-
-/* ACTIONS */
-.actions {
-  min-width: 140px;
+.category {
+  font-style: italic;
 }
 
 /* EMPTY */
 .empty-state {
-  color: #ccc;
+  color: #aaa;
   font-style: italic;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .product-description {
-    max-width: 240px;
-  }
 }
 </style>
