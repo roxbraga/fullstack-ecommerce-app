@@ -8,14 +8,12 @@ export const useProductsStore = defineStore('products', {
   }),
 
   getters: {
-    /* ================= USER / CATALOG ================= */
-
     activeProducts: (state) =>
       state.products.filter(p => p.isActive && p.stock > 0)
   },
 
   actions: {
-    /* ================= USER / PUBLIC ================= */
+    /* USER / PUBLIC */
 
     async fetchActiveProducts() {
       this.loading = true
@@ -30,7 +28,6 @@ export const useProductsStore = defineStore('products', {
       }
     },
 
-    // AFTER CHECKOUT (refresh stock + availability)
     async refreshProducts() {
       const res = await api.get('/product')
       this.products = res.data
@@ -44,7 +41,7 @@ export const useProductsStore = defineStore('products', {
       return res.data
     },
 
-    /* ================= ADMIN ONLY ================= */
+    /* ADMIN */
 
     async fetchAllProducts() {
       this.loading = true
@@ -53,6 +50,19 @@ export const useProductsStore = defineStore('products', {
         this.products = res.data
       } catch (err) {
         console.error('Failed to fetch all products:', err)
+        this.products = []
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async fetchArchivedProducts() {
+      this.loading = true
+      try {
+        const res = await api.get('/product/archived')
+        this.products = res.data
+      } catch (err) {
+        console.error('Failed to fetch archived products:', err)
         this.products = []
       } finally {
         this.loading = false
@@ -76,32 +86,25 @@ export const useProductsStore = defineStore('products', {
     },
 
     async toggleActive(product) {
-      const res = await api.patch(`/product/${product._id}`, {
-        isActive: !product.isActive
-      })
-
-      const index = this.products.findIndex(p => p._id === product._id)
-      if (index !== -1) {
-        this.products[index] = res.data.product
+      if (product.isActive) {
+        await api.patch(`/product/${product._id}/archive`)
+        this.products = this.products.filter(p => p._id !== product._id)
+      } else {
+        const res = await api.patch(`/product/${product._id}`, { isActive: true })
+        this.products = this.products.filter(p => p._id !== product._id)
+        return res.data.product
       }
     },
 
-    
-
-    // DELETE SINGLE PRODUCT
-    async deleteProduct(id) {
-      await api.delete(`/product/${id}`)
-
-      // remove from local state
+    async archiveProduct(id) {
+      await api.patch(`/product/${id}/archive`)
       this.products = this.products.filter(p => p._id !== id)
     },
 
-    // DELETE MULTIPLE PRODUCTS
-    async deleteMany(ids) {
-      await api.post('/product/delete-many', { ids })
-
-      // remove locally
-      this.products = this.products.filter(p => !ids.includes(p._id))
+    async restoreProduct(id) {
+      const res = await api.patch(`/product/${id}`, { isActive: true })
+      this.products = this.products.filter(p => p._id !== id)
+      return res.data.product
     }
   }
 })

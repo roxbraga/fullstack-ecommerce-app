@@ -17,11 +17,11 @@
       </div>
 
       <button
-        class="btn btn-sm btn-danger"
+        class="btn btn-sm btn-warning"
         :disabled="!selectedIds.length"
-        @click="deleteSelected"
+        @click="archiveSelected"
       >
-        Delete Selected ({{ selectedIds.length }})
+        Archive Selected ({{ selectedIds.length }})
       </button>
     </div>
 
@@ -75,21 +75,18 @@
 
             <!-- STATUS -->
             <td class="col-status text-center">
-              <span
-                class="badge px-2 py-1"
-                :class="p.isActive ? 'bg-success' : 'bg-secondary'"
-              >
-                {{ p.isActive ? 'Active' : 'Inactive' }}
+              <span class="badge bg-success px-2 py-1">
+                Active
               </span>
             </td>
 
             <!-- ACTION -->
             <td class="col-action text-center">
               <button
-                class="btn btn-sm btn-outline-danger"
-                @click="deleteOne(p._id)"
+                class="btn btn-sm btn-outline-warning"
+                @click="archiveOne(p._id)"
               >
-                Delete
+                Archive
               </button>
             </td>
           </tr>
@@ -108,12 +105,23 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { useProductsStore } from '../stores/products'
+import { Notyf } from 'notyf'
+import 'notyf/notyf.min.css'
+
+const notyf = new Notyf({
+  duration: 2500,
+  position: { x: 'right', y: 'top' }
+})
 
 const productsStore = useProductsStore()
 const selectedIds = ref([])
 
-onMounted(() => {
-  productsStore.fetchAllProducts()
+onMounted(async () => {
+  try {
+    await productsStore.fetchAllProducts()
+  } catch {
+    notyf.error('Failed to load products')
+  }
 })
 
 const allSelected = computed(() =>
@@ -127,16 +135,32 @@ const toggleAll = (e) => {
     : []
 }
 
-const deleteOne = async (id) => {
-  if (!confirm('Delete this product?')) return
-  await productsStore.deleteProduct(id)
-  selectedIds.value = selectedIds.value.filter(i => i !== id)
+// ARCHIVE SINGLE
+const archiveOne = async (id) => {
+  if (!confirm('Archive this product?')) return
+
+  try {
+    await productsStore.archiveProduct(id)
+    selectedIds.value = selectedIds.value.filter(i => i !== id)
+    notyf.success('Product archived')
+  } catch {
+    notyf.error('Failed to archive product')
+  }
 }
 
-const deleteSelected = async () => {
-  if (!confirm(`Delete ${selectedIds.value.length} products?`)) return
-  await productsStore.deleteMany(selectedIds.value)
-  selectedIds.value = []
+// ARCHIVE MULTIPLE
+const archiveSelected = async () => {
+  if (!confirm(`Archive ${selectedIds.value.length} products?`)) return
+
+  try {
+    for (const id of selectedIds.value) {
+      await productsStore.archiveProduct(id)
+    }
+    selectedIds.value = []
+    notyf.success('Selected products archived')
+  } catch {
+    notyf.error('Failed to archive products')
+  }
 }
 </script>
 

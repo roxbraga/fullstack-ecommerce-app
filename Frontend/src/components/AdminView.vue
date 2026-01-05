@@ -18,13 +18,14 @@
         </li>
 
         <li>
-          <router-link class="sidebar-item" to="/admin/products">
-            Product Catalog
-          </router-link>
-        </li>
-        <li>
           <router-link class="sidebar-item" to="/admin/product-list">
             Product List
+          </router-link>
+        </li>
+
+        <li>
+          <router-link class="sidebar-item" to="/admin/archived-products">
+            Archived Products
           </router-link>
         </li>
         

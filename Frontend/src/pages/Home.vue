@@ -1,162 +1,280 @@
+<script setup>
+import Banner from '../components/Banner.vue'
+
+</script>
+
 <template>
-  <div class="user-root">
-    <div class="container py-5">
-      <h2 class="page-title mb-4 text-center fw-bold">Our Products</h2>
+  
 
-      <div class="row g-4">
-        <div
-          v-for="product in products"
-          :key="product._id"
-          class="col-md-4 col-sm-6"
-        >
-          <div class="product-card">
+  <div id="home" class="page-offset">
+    <Banner />
+    <!-- ABOUT -->
+    <section id="about" class="section dark">
+      <div class="container text-white">
+        <h2 class="section-title text-center mb-5">About Unicoss Garage</h2>
 
-            <!-- IMAGE -->
-            <div class="product-image-wrapper">
-              <img
-                :src="product.image || '/images/placeholder.png'"
-                :alt="product.name"
-                class="product-image"
-              />
-            </div>
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-6 d-flex justify-content-center">
+            <img src="/images/2.jpg" class="about-image" />
+          </div>
 
-            <!-- INFO -->
-            <h5 class="product-name mt-3">{{ product.name }}</h5>
-            <p class="product-category">{{ product.category }}</p>
-            <p class="product-price">₱{{ product.price }}</p>
-
-            <div class="d-grid gap-2 mt-3">
-              <button
-                class="btn btn-outline-warning"
-                @click="goToDetails(product._id)"
-              >
-                View Details
-              </button>
-
-              <button
-                class="btn btn-warning"
-                @click="addToCart(product._id)"
-              >
-                Add to Cart
-              </button>
-            </div>
-
+          <div class="col-lg-6">
+            <p class="about-text">
+              At Unicoss Garage, we believe a car is more than just a machine —
+              it is a reflection of identity, passion, and intent.
+            </p>
+            <p class="about-text">
+              Our builds are crafted with precision, balance,
+              and respect for timeless automotive design.
+            </p>
+            <p class="about-text">
+              Every project is treated as a signature piece,
+              engineered for confidence and performance.
+            </p>
           </div>
         </div>
       </div>
+    </section>
 
-      <p v-if="!products.length" class="text-center text-muted mt-5">
-        No products available.
-      </p>
-    </div>
+    <!-- SERVICES -->
+    <section id="services" class="section">
+      <div class="container text-white">
+        <h2 class="section-title text-center mb-5">Services</h2>
+
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-6">
+            <p class="service-text">
+              We specialize in precision paint restoration, body kit installation,
+              and exterior refinishing using professional-grade techniques.
+            </p>
+
+            <ul class="service-list">
+              <li>Paint & Dent Restoration</li>
+              <li>Custom Body Kits Installation</li>
+              <li>Exterior Refinishing</li>
+              <li>Design Consultation</li>
+            </ul>
+          </div>
+
+          <div class="col-lg-6 d-flex justify-content-center">
+            <div class="video-wrapper">
+              <video src="/images/3d.mp4" autoplay loop muted playsinline></video>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESIGN -->
+    <section id="design" class="section dark">
+      <div class="container text-white">
+        <h2 class="section-title text-center mb-5">Design Philosophy</h2>
+
+        <div class="row align-items-center gy-4">
+          <div class="col-lg-6 d-flex justify-content-center">
+            <img src="/images/43.webp" class="about-image" />
+          </div>
+
+          <div class="col-lg-6">
+            <p class="about-text">
+              Our design philosophy is rooted in purpose and proportion.
+            </p>
+            <p class="about-text">
+              We balance aggression with refinement to create confident builds.
+            </p>
+            <p class="about-text">
+              Design that ages gracefully and performs beautifully.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="container text-white">
+        <h2 class="section-title text-center mb-5">Contact Us</h2>
+
+        <div class="row gy-4 align-items-stretch">
+          <div class="col-lg-6">
+            <div class="map-wrapper">
+              <iframe
+                src="https://maps.google.com/maps?q=Lucban%20Quezon%20Philippines&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <form class="contact-form">
+              <input class="form-control mb-3" placeholder="Your Name" />
+              <input class="form-control mb-3" placeholder="Email Address" />
+              <textarea
+                rows="5"
+                class="form-control mb-3"
+                placeholder="Your Message"
+              ></textarea>
+
+              <button class="btn w-100 send-btn">
+                Send Message
+              </button>
+
+              <div class="social-icons text-center mt-4">
+                <i class="bi bi-facebook"></i>
+                <i class="bi bi-instagram"></i>
+                <i class="bi bi-twitter"></i>
+                <i class="bi bi-youtube"></i>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section dark">
+      <div class="container text-white">
+        <h2 class="section-title text-center mb-5">FAQ</h2>
+
+        <div class="row justify-content-center">
+          <div class="col-lg-8 faq-text">
+            <p><strong>Do you accept custom builds?</strong><br>
+              Yes. Every project starts with a consultation to understand your vision.
+            </p>
+
+            <p><strong>How long does a build take?</strong><br>
+              Timelines vary depending on scope and complexity.
+            </p>
+
+            <p><strong>Do you work on all car models?</strong><br>
+              We focus mainly on sports and performance vehicles.
+            </p>
+
+            <p><strong>Where are you located?</strong><br>
+              Lucban, Quezon, Philippines.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer-section text-center text-white">
+      <p class="footer-copy">© 2026 Unicoss Garage. All rights reserved.</p>
+      <p class="footer-credit">Cristino France Madali – Capstone-3</p>
+    </footer>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import api from '../api'
-import { useCartStore } from '../stores/cart'
-import { Notyf } from 'notyf'
-
-const products = ref([])
-const router = useRouter()
-const cart = useCartStore()
-const notyf = new Notyf()
-
-const fetchProducts = async () => {
-  try {
-    const { data } = await api.get('/product')
-    products.value = data
-  } catch (err) {
-    console.error('Failed to load products', err)
-  }
-}
-
-const goToDetails = (id) => {
-  router.push(`/products/${id}`)
-}
-
-const addToCart = async (productId) => {
-  try {
-    await cart.addToCart(productId)
-    notyf.success('Added to cart')
-  } catch (err) {
-    console.error(err.response?.data || err)
-    notyf.error('Failed to add to cart')
-  }
-}
-
-onMounted(fetchProducts)
-</script>
-
 <style scoped>
-
-
-.container {
-  position: relative;
-  z-index: 1;
+.section {
+  padding: 5rem 0;
 }
 
-/* TITLE */
-.page-title {
-  font-family: 'League Script', cursive;
+.section.dark {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.section-title {
   color: #ffd84d;
-  font-size: 2.5rem;
 }
 
-/* CARD */
-.product-card {
-  background: rgba(33, 37, 41, 0.75);
-  backdrop-filter: blur(6px);
-  border-radius: 16px;
-  padding: 1.5rem;
-  color: #fff;
-  text-align: center;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  height: 100%;
+/* ABOUT / DESIGN */
+.about-image {
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
 }
 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.7);
-}
-
-/* IMAGE */
-.product-image-wrapper {
-  width: 100%;
-  height: 180px;
-  border-radius: 12px;
+/* VIDEO */
+.video-wrapper {
+  max-width: 520px;
+  height: 300px;
+  border-radius: 18px;
   overflow: hidden;
-  background: #000;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-.product-image {
+.video-wrapper video {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* TEXT */
-.product-name {
-  font-weight: 700;
+/* MAP */
+.map-wrapper {
+  height: 350px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
-.product-category {
-  color: #adb5bd;
-  font-size: 0.9rem;
+.map-wrapper iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
-.product-price {
-  font-size: 1.2rem;
-  color: #ffd84d;
-  font-weight: 700;
+/* CONTACT FORM */
+.contact-form .form-control {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: 1px solid #ffc107;
 }
 
-/* BUTTONS */
-.product-card .btn {
-  border-radius: 12px;
+/* PLACEHOLDER WHITE */
+.contact-form .form-control::placeholder {
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+/* SEND BUTTON */
+.send-btn {
+  background-color: #ffc107;
+  color: #000;
   font-weight: 600;
+  border: 1px solid #ffc107;
+  transition: all 0.25s ease;
+}
+
+.send-btn:hover {
+  background-color: transparent;
+  color: #ffc107;
+  border-color: #ffc107;
+}
+
+/* SOCIAL ICONS */
+.social-icons i {
+  font-size: 1.4rem;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  color: #ffffff;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.social-icons i:hover {
+  color: #ffc107;
+  transform: translateY(-3px);
+}
+
+/* FOOTER */
+.footer-section {
+  background: #0b0b0b;
+  padding: 2rem 0;
+}
+
+.footer-copy {
+  opacity: 0.7;
+}
+
+.footer-credit {
+  opacity: 0.5;
+  font-size: 0.85rem;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 </style>

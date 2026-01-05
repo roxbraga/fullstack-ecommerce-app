@@ -55,7 +55,7 @@ onMounted(async () => {
 
 <style scoped>
 /* ROOT WITH WALLPAPER */
-.user-root {
+/*.user-root {
   min-height: 100vh;
   background: url('@/assets/rox09.jpg') center / cover no-repeat;
   position: relative;
@@ -66,7 +66,7 @@ onMounted(async () => {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.55);
-}
+}*/
 
 .container {
   position: relative;
@@ -91,9 +91,10 @@ onMounted(async () => {
 /* TITLE */
 .page-title {
   text-align: center;
-  font-family: 'League Script', cursive;
-  font-size: 2.5rem;
+  font-family: sans-serif;
   color: #ffd84d;
+  font-size: 2.5rem;
+
 }
 
 /* INFO ROWS */

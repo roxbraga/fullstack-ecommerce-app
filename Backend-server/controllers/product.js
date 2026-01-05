@@ -9,22 +9,12 @@ function ensureAdmin(req, res) {
   return true;
 }
 
+// ================= PUBLIC =================
+
 // GET ACTIVE PRODUCTS
 module.exports.getActiveProducts = async function(req, res) {
   try {
     const products = await Product.find({ isActive: true });
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to fetch products', error: err.message });
-  }
-};
-
-// GET ALL PRODUCTS
-module.exports.getAllProducts = async function(req, res) {
-  if (!ensureAdmin(req, res)) return;
-
-  try {
-    const products = await Product.find();
     res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: 'Failed to fetch products', error: err.message });
@@ -46,8 +36,60 @@ module.exports.getProduct = async function(req, res) {
   }
 };
 
-// CREATE PRODUCT
+// SEARCH BY PRICE RANGE
+module.exports.searchByPriceRange = async function(req, res) {
+  try {
+    const { minPrice, maxPrice } = req.body;
+    const query = {};
 
+    if (minPrice !== undefined) query.price = { $gte: minPrice };
+    if (maxPrice !== undefined) query.price = { ...query.price, $lte: maxPrice };
+
+    const products = await Product.find(query);
+
+    res.status(200).json({
+      message: 'Products retrieved successfully',
+      count: products.length,
+      products
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// ================= ADMIN =================
+
+// GET ALL ACTIVE PRODUCTS (ADMIN DASHBOARD)
+module.exports.getAllProducts = async function(req, res) {
+  if (!ensureAdmin(req, res)) return;
+
+  try {
+    //  ACTIVE ONLY
+    const products = await Product.find({ isActive: true });
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch products', error: err.message });
+  }
+};
+
+//  GET ARCHIVED PRODUCTS (NEW)
+module.exports.getArchivedProducts = async function(req, res) {
+  if (!ensureAdmin(req, res)) return;
+
+  try {
+    const products = await Product.find({ isActive: false })
+      .sort({ updatedAt: -1 });
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({
+      message: 'Failed to fetch archived products',
+      error: err.message
+    });
+  }
+};
+
+// CREATE PRODUCT
 module.exports.createProduct = async function(req, res) {
   if (!ensureAdmin(req, res)) return;
 
@@ -55,7 +97,9 @@ module.exports.createProduct = async function(req, res) {
     const { name, description, price, category, image, stock, isActive } = req.body;
 
     if (!name || !price || !category) {
-      return res.status(400).json({ message: 'Name, price, and category are required' });
+      return res.status(400).json({
+        message: 'Name, price, and category are required'
+      });
     }
 
     const product = new Product({
@@ -71,9 +115,15 @@ module.exports.createProduct = async function(req, res) {
 
     await product.save();
 
-    res.status(201).json({ message: 'Product created successfully', product });
+    res.status(201).json({
+      message: 'Product created successfully',
+      product
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to create product', error: err.message });
+    res.status(500).json({
+      message: 'Failed to create product',
+      error: err.message
+    });
   }
 };
 
@@ -85,80 +135,53 @@ module.exports.updateProduct = async function(req, res) {
     const { id } = req.params;
     const updates = req.body;
 
-    const product = await Product.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+    const product = await Product.findByIdAndUpdate(
+      id,
+      updates,
+      { new: true, runValidators: true }
+    );
 
-    if (!product) return res.status(404).json({ message: 'Product not found' });
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
 
-    res.status(200).json({ message: 'Product updated successfully', product });
+    res.status(200).json({
+      message: 'Product updated successfully',
+      product
+    });
   } catch (err) {
-    res.status(500).json({ message: 'Failed to update product', error: err.message });
+    res.status(500).json({
+      message: 'Failed to update product',
+      error: err.message
+    });
   }
 };
 
-// Archive Product
+// ARCHIVE PRODUCT
 module.exports.archiveProduct = async function(req, res) {
   if (!ensureAdmin(req, res)) return;
 
   try {
     const { id } = req.params;
 
-    const product = await Product.findByIdAndUpdate(id, { isActive: false }, { new: true });
-
-    if (!product) return res.status(404).json({ message: 'Product not found' });
-
-    res.status(200).json({ message: 'Product archived successfully', product });
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to archive product', error: err.message });
-  }
-};
-
-// SEARCH BY PRICE RANGE
-module.exports.searchByPriceRange = async function(req, res) {
-  try {
-    const { minPrice, maxPrice } = req.body;
-    const query = {};
-
-    if (minPrice !== undefined) query.price = { $gte: minPrice };
-    if (maxPrice !== undefined) query.price = { ...query.price, $lte: maxPrice };
-
-    const products = await Product.find(query);
-
-    res.status(200).json({ message: 'Products retrieved successfully', count: products.length, products });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-// DELETE SINGLE PRODUCT (ADMIN)
-exports.deleteProduct = async (req, res) => {
-  try {
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      return res.status(404).json({ message: 'Product not found' });
     }
 
-    product.isActive = false
-    await product.save()
-
-    res.json({ success: true, product })
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to delete product' })
+    res.status(200).json({
+      message: 'Product archived successfully',
+      product
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: 'Failed to archive product',
+      error: err.message
+    });
   }
-}
-
-// DELETE MANY PRODUCTS (ADMIN)
-exports.deleteManyProducts = async (req, res) => {
-  try {
-    const { ids } = req.body
-
-    await Product.updateMany(
-      { _id: { $in: ids } },
-      { $set: { isActive: false } }
-    )
-
-    res.json({ success: true })
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to delete products' })
-  }
-}
+};

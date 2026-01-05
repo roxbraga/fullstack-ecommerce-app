@@ -2,7 +2,7 @@
   <div class="page text-white">
     <div class="container py-5">
 
-      <h2 class="text-warning mb-4 text-center">My Cart</h2>
+      <h2 class="page-title text-warning mb-4 text-center">My Cart</h2>
 
       <!-- SELECT ALL -->
       <div v-if="cart.items.length" class="mb-3">
@@ -133,7 +133,7 @@ const decrease = (item) => {
   }
 }
 
-/* 🔥 SINGLE CHECKOUT */
+/*  SINGLE CHECKOUT */
 const checkoutSingle = async (item) => {
   try {
     await api.post('/orders', {
@@ -146,7 +146,7 @@ const checkoutSingle = async (item) => {
 
     await cart.removeFromCart(item._id)
     await ordersStore.refreshOrders()
-    await productsStore.refreshProducts() // 🔥 REACTIVE STOCK
+    await productsStore.refreshProducts() 
 
     notyf.success('Item checked out!')
     router.push('/orders')
@@ -155,7 +155,7 @@ const checkoutSingle = async (item) => {
   }
 }
 
-/* 🔥 MULTI CHECKOUT */
+/*  MULTI CHECKOUT */
 const checkoutSelected = async () => {
   try {
     await api.post('/orders', {
@@ -168,7 +168,7 @@ const checkoutSelected = async () => {
 
     await cart.clearCart()
     await ordersStore.refreshOrders()
-    await productsStore.refreshProducts() // 🔥 REACTIVE STOCK
+    await productsStore.refreshProducts() 
 
     notyf.success('Checkout successful!')
     router.push('/orders')
@@ -189,5 +189,10 @@ const checkoutSelected = async () => {
   background: rgba(33, 37, 41, 0.75);
   padding: 1rem;
   border-radius: 14px;
+}
+.page-title {
+  font-family: sans-serif;
+  color: #ffd84d;
+  font-size: 2.5rem;
 }
 </style>

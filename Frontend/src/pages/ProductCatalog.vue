@@ -1,233 +1,162 @@
 <template>
-  <div class="container py-5">
-    <h2 class="page-title mb-4">Product Catalog</h2>
+  <div class="user-root">
+    <div class="container py-5">
+      <h2 class="page-title mb-4 text-center ">Products Catalog</h2>
 
-    <div class="table-card" v-if="productsStore.products.length">
-      <div class="table-responsive">
-        <table class="table table-dark table-hover align-middle mb-0">
-          <thead class="table-head text-center">
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-              <th>Price</th>
-              <th>Category</th>
-              <th>Status</th>
-              <th class="text-center">Actions</th>
-            </tr>
-          </thead>
+      <div class="row g-4">
+        <div
+          v-for="product in products"
+          :key="product._id"
+          class="col-md-4 col-sm-6"
+        >
+          <div class="product-card">
 
-          <tbody>
-            <tr
-              v-for="product in productsStore.products"
-              :key="product._id"
-              class="table-row"
-            >
-              <!-- NAME -->
-              <td class="fw-semibold text-nowrap">
-                {{ product.name }}
-              </td>
+            <!-- IMAGE -->
+            <div class="product-image-wrapper">
+              <img
+                :src="product.image || '/images/placeholder.png'"
+                :alt="product.name"
+                class="product-image"
+              />
+            </div>
 
-              <!-- DESCRIPTION -->
-              <td class="product-description">
-                <p
-                  class="desc-text"
-                  :class="{ expanded: expandedDesc === product._id }"
-                >
-                  {{ product.description }}
-                </p>
+            <!-- INFO -->
+            <h5 class="product-name mt-3">{{ product.name }}</h5>
+            <p class="product-category">{{ product.category }}</p>
+            <p class="product-price">₱{{ product.price }}</p>
 
-                <button
-                  v-if="product.description && product.description.length > 120"
-                  class="btn btn-link p-0 desc-toggle"
-                  @click="toggleDesc(product._id)"
-                >
-                  {{ expandedDesc === product._id ? 'View less' : 'View more' }}
-                </button>
-              </td>
+            <div class="d-grid gap-2 mt-3">
+              <button
+                class="btn btn-outline-warning"
+                @click="goToDetails(product._id)"
+              >
+                View Details
+              </button>
 
-              <!-- PRICE -->
-              <td class="price">
-                ₱{{ product.price }}
-              </td>
+              <button
+                class="btn btn-warning"
+                @click="addToCart(product._id)"
+              >
+                Add to Cart
+              </button>
+            </div>
 
-              <!-- CATEGORY -->
-              <td class="text-white">
-                {{ product.category }}
-              </td>
-
-              <!-- STATUS -->
-              <td class="text-center">
-                <span
-                  class="status-pill"
-                  :class="product.isActive ? 'active' : 'inactive'"
-                >
-                  {{ product.isActive ? 'Active' : 'Inactive' }}
-                </span>
-              </td>
-
-              <!-- ACTIONS -->
-              <td class="actions">
-                <router-link
-                  class="btn btn-warning btn-sm w-100 mb-2"
-                  :to="`/admin/products/${product._id}/edit`"
-                >
-                  Edit
-                </router-link>
-
-                <button
-                  class="btn btn-sm w-100"
-                  :class="product.isActive
-                    ? 'btn-outline-danger'
-                    : 'btn-outline-success'"
-                  @click="productsStore.toggleActive(product)"
-                >
-                  {{ product.isActive ? 'Deactivate' : 'Activate' }}
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <!-- EMPTY STATE -->
-    <div v-else class="empty-state text-center">
-      <p>No products found.</p>
+      <p v-if="!products.length" class="text-center text-muted mt-5">
+        No products available.
+      </p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useProductsStore } from '../stores/products'
+import { useRouter } from 'vue-router'
+import api from '../api'
+import { useCartStore } from '../stores/cart'
+import { Notyf } from 'notyf'
 
-const productsStore = useProductsStore()
-const expandedDesc = ref(null)
+const products = ref([])
+const router = useRouter()
+const cart = useCartStore()
+const notyf = new Notyf()
 
-const toggleDesc = (id) => {
-  expandedDesc.value = expandedDesc.value === id ? null : id
+const fetchProducts = async () => {
+  try {
+    const { data } = await api.get('/product')
+    products.value = data
+  } catch (err) {
+    console.error('Failed to load products', err)
+  }
 }
 
-onMounted(() => {
-  productsStore.fetchAllProducts()
-})
+const goToDetails = (id) => {
+  router.push(`/products/${id}`)
+}
+
+const addToCart = async (productId) => {
+  try {
+    await cart.addToCart(productId)
+    notyf.success('Added to cart')
+  } catch (err) {
+    console.error(err.response?.data || err)
+    notyf.error('Failed to add to cart')
+  }
+}
+
+onMounted(fetchProducts)
 </script>
 
 <style scoped>
+
+
 .container {
-  max-width: 1100px;
+  position: relative;
+  z-index: 1;
 }
 
 /* TITLE */
 .page-title {
-  font-size: 2.6rem;
-  text-align: center;
+  font-family: sans-serif;
   color: #ffd84d;
+  font-size: 2.5rem;
 }
 
 /* CARD */
-.table-card {
-  background: linear-gradient(
-    135deg,
-    rgba(33, 37, 41, 0.85),
-    rgba(18, 18, 18, 0.75)
-  );
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+.product-card {
+  background: rgba(33, 37, 41, 0.75);
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  padding: 1.5rem;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.7);
+}
+
+/* IMAGE */
+.product-image-wrapper {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
   overflow: hidden;
+  background: #000;
 }
 
-/* HEADER */
-.table-head th {
-  background: linear-gradient(135deg, #2b2f33, #1c1f22);
-  color: #f8f9fa;
-  font-weight: 600;
-  padding: 1rem;
+.product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-/* ROW */
-.table-row {
-  transition: background 0.2s ease;
+/* TEXT */
+.product-name {
+  font-weight: 700;
 }
 
-.table-row:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-/* DESCRIPTION */
-.product-description {
-  max-width: 360px;
-  vertical-align: top;
-}
-
-.desc-text {
-  margin: 0;
-  color: #dee2e6;
+.product-category {
+  color: #adb5bd;
   font-size: 0.9rem;
-  line-height: 1.5;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
-.desc-text.expanded {
-  -webkit-line-clamp: unset;
-  overflow: visible;
+.product-price {
+  font-size: 1.2rem;
+  color: #ffd84d;
+  font-weight: 700;
 }
 
-.desc-toggle {
-  font-size: 0.75rem;
-  color: #ffc107;
-  text-decoration: none;
-}
-
-.desc-toggle:hover {
-  text-decoration: underline;
-}
-
-/* PRICE */
-.price {
-  font-family: monospace;
+/* BUTTONS */
+.product-card .btn {
+  border-radius: 12px;
   font-weight: 600;
-  white-space: nowrap;
-}
-
-/* STATUS */
-.status-pill {
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-}
-
-.status-pill.active {
-  background: #198754;
-  color: #fff;
-}
-
-.status-pill.inactive {
-  background: #6c757d;
-  color: #fff;
-}
-
-/* ACTIONS */
-.actions {
-  min-width: 140px;
-}
-
-/* EMPTY */
-.empty-state {
-  color: #ccc;
-  font-style: italic;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .product-description {
-    max-width: 220px;
-  }
 }
 </style>
