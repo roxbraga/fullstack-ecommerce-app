@@ -1,35 +1,6 @@
 <template>
   <div id="home" class="login-page min-vh-100">
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-navbar">
-      <div class="container">
-        <div class="navbar-brand">
-          <h2 class="logo">Unicoss <br>&nbsp;&nbsp;&nbsp;Garage</h2>
-        </div>
-
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mx-auto">
-            <li class="nav-item"><a class="nav-link" href="#home">HOME</a></li>
-            <li class="nav-item"><a class="nav-link" href="#about">ABOUT</a></li>
-            <li class="nav-item"><a class="nav-link" href="#services">SERVICE</a></li>
-            <li class="nav-item"><a class="nav-link" href="#design">DESIGN</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">CONTACT</a></li>
-            <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
     <!-- HERO + LOGIN -->
     <section class="container py-5 text-white">
       <div class="row align-items-center">

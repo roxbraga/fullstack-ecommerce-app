@@ -1,9 +1,11 @@
 <template>
-  <div id="app" class="app-wrapper">
-    <!-- NAVBAR ALWAYS MOUNTED -->
-    <NavbarComponent
-      v-show="showNavbar"
-    />
+  <div
+    id="app"
+    class="app-wrapper"
+    :class="{ 'with-navbar': showNavbar }"
+  >
+    <!-- NAVBAR -->
+    <NavbarComponent v-show="showNavbar" />
 
     <!-- PAGE CONTENT -->
     <router-view />
@@ -18,7 +20,6 @@ import NavbarComponent from './components/NavbarComponent.vue'
 
 const store = useGlobalStore()
 const ordersStore = useOrdersStore()
-
 
 const showNavbar = computed(() =>
   store.isLoggedIn && !store.user.isAdmin
@@ -35,11 +36,17 @@ onMounted(async () => {
 </script>
 
 <style>
-html, body {
+html,
+body {
   height: 100%;
 }
 
 #app {
   min-height: 100%;
+}
+
+
+.with-navbar {
+  padding-top: 64px; 
 }
 </style>
