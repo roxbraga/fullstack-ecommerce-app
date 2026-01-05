@@ -20,7 +20,7 @@ import Banner from '../components/Banner.vue'
 
           <div class="col-lg-6">
             <p class="about-text">
-              At Unicoss Garage, we believe a car is more than just a machine —
+              At Unicoss Garage, we believe a car is more than just a machine 
               it is a reflection of identity, passion, and intent.
             </p>
             <p class="about-text">
@@ -169,17 +169,28 @@ import Banner from '../components/Banner.vue'
 <style scoped>
 .section {
   padding: 5rem 0;
+  background: transparent; /* FULL TRANSPARENT */
 }
 
+/* REMOVE DARK OVERLAY */
 .section.dark {
-  background: rgba(0, 0, 0, 0.65);
+  background: transparent;
 }
 
+/* TITLES */
 .section-title {
   color: #ffd84d;
 }
 
-/* ABOUT / DESIGN */
+/* TEXT READABILITY */
+.about-text,
+.service-text,
+.faq-text p,
+.service-list li {
+  text-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+/* ABOUT / DESIGN IMAGE */
 .about-image {
   width: 320px;
   height: 320px;
@@ -217,14 +228,20 @@ import Banner from '../components/Banner.vue'
   border: 0;
 }
 
-/* CONTACT FORM */
+/* CONTACT FORM (GLASS EFFECT) */
+.contact-form {
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(6px);
+  padding: 1.5rem;
+  border-radius: 18px;
+}
+
 .contact-form .form-control {
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   border: 1px solid #ffc107;
 }
 
-/* PLACEHOLDER WHITE */
 .contact-form .form-control::placeholder {
   color: #ffffff;
   opacity: 0.9;
@@ -242,7 +259,6 @@ import Banner from '../components/Banner.vue'
 .send-btn:hover {
   background-color: transparent;
   color: #ffc107;
-  border-color: #ffc107;
 }
 
 /* SOCIAL ICONS */
@@ -261,7 +277,7 @@ import Banner from '../components/Banner.vue'
 
 /* FOOTER */
 .footer-section {
-  background: #0b0b0b;
+  background: rgba(0,0,0,.75);
   padding: 2rem 0;
 }
 
@@ -277,4 +293,5 @@ import Banner from '../components/Banner.vue'
 html {
   scroll-behavior: smooth;
 }
+
 </style>

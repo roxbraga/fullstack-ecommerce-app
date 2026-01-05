@@ -139,7 +139,7 @@ exports.cancelOrder = async (req, res) => {
       return res.status(400).json({ message: 'Order already cancelled' })
     }
 
-    // 🔥 ROLLBACK STOCK
+    //  ROLLBACK STOCK
     for (const item of order.items) {
       const product = await Product.findById(item.productId)
 

@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
       default: ''
     },
 
-    // 🔥 CURRENT AVAILABLE STOCK
+    // CURRENT AVAILABLE STOCK
     stock: {
       type: Number,
       required: true,
@@ -38,7 +38,7 @@ const productSchema = new mongoose.Schema(
       default: 0
     },
 
-    // 🔥 TOTAL ORDERS FOR THIS PRODUCT (ACCUMULATED)
+    // TOTAL ORDERS FOR THIS PRODUCT 
     totalOrders: {
       type: Number,
       default: 0
