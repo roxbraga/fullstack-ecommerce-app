@@ -64,7 +64,7 @@
       <div class="mt-auto border-top pt-3">
         <div class="d-flex align-items-center mb-3">
           <div class="avatar me-2">{{ initials }}</div>
-          <span>{{ store.user.name }}</span>
+          <span>{{ store.user.firstName }}</span>
         </div>
 
         <button class="btn btn-outline-warning w-100" @click="logoutUser">

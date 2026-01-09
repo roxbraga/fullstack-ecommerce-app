@@ -28,7 +28,9 @@
 
         <div class="flex-grow-1 ms-3">
           <h5 class="mb-1">{{ item.name }}</h5>
-          <p class="mb-1 text-warning">₱{{ item.price.toLocaleString() }}</p>
+          <p class="mb-1 text-warning">
+            ₱{{ item.price.toLocaleString() }}
+          </p>
 
           <div class="d-flex gap-2 align-items-center">
             <button
@@ -133,10 +135,10 @@ const decrease = (item) => {
   }
 }
 
-/*  SINGLE CHECKOUT */
+/* SINGLE CHECKOUT */
 const checkoutSingle = async (item) => {
   try {
-    await api.post('/orders', {
+    await api.post('/orders/checkout', {
       items: [{
         productId: item._id,
         quantity: item.quantity
@@ -145,8 +147,8 @@ const checkoutSingle = async (item) => {
     })
 
     await cart.removeFromCart(item._id)
-    await ordersStore.refreshOrders()
-    await productsStore.refreshProducts() 
+    await ordersStore.fetchMyOrders()
+    await productsStore.fetchActiveProducts()
 
     notyf.success('Item checked out!')
     router.push('/orders')
@@ -155,10 +157,10 @@ const checkoutSingle = async (item) => {
   }
 }
 
-/*  MULTI CHECKOUT */
+/* MULTI CHECKOUT */
 const checkoutSelected = async () => {
   try {
-    await api.post('/orders', {
+    await api.post('/orders/checkout', {
       items: cart.selectedItems.map(item => ({
         productId: item._id,
         quantity: item.quantity
@@ -167,8 +169,8 @@ const checkoutSelected = async () => {
     })
 
     await cart.clearCart()
-    await ordersStore.refreshOrders()
-    await productsStore.refreshProducts() 
+    await ordersStore.fetchMyOrders()
+    await productsStore.fetchActiveProducts()
 
     notyf.success('Checkout successful!')
     router.push('/orders')
@@ -190,6 +192,7 @@ const checkoutSelected = async () => {
   padding: 1rem;
   border-radius: 14px;
 }
+
 .page-title {
   font-family: sans-serif;
   color: #ffd84d;

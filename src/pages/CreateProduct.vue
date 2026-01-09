@@ -38,7 +38,7 @@
           />
         </div>
 
-        <!-- STOCK (FIXED) -->
+        <!-- STOCK -->
         <div class="col-md-6">
           <label class="form-label">Stock</label>
           <input
@@ -122,7 +122,7 @@ const form = reactive({
   description: '',
   price: 0,
   category: '',
-  stock: 0,      
+  stock: 0,
   image: '',
   isActive: true
 })
@@ -131,12 +131,14 @@ async function addProduct() {
   try {
     await productsStore.addProduct({ ...form })
 
-    // reset form
-    Object.keys(form).forEach(key => {
-      if (typeof form[key] === 'boolean') form[key] = true
-      else if (typeof form[key] === 'number') form[key] = 0
-      else form[key] = ''
-    })
+    // reset form (clean & predictable)
+    form.name = ''
+    form.description = ''
+    form.price = 0
+    form.category = ''
+    form.stock = 0
+    form.image = ''
+    form.isActive = true
 
     router.push('/admin/product-list')
   } catch (err) {
@@ -150,19 +152,22 @@ async function addProduct() {
 .container {
   max-width: 750px;
 }
+
 .page-title {
   font-size: 2rem;
   text-align: center;
   margin-bottom: 1.5rem;
   color: #ffd84d;
 }
+
 .product-card {
   padding: 1.5rem;
   border-radius: 12px;
   backdrop-filter: blur(6px);
-  background: rgba(33,37,41,0.75);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+  background: rgba(33, 37, 41, 0.75);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
 }
+
 .custom-input {
   background: rgba(248, 249, 250, 0.95);
   border-radius: 8px;
@@ -170,9 +175,11 @@ async function addProduct() {
   font-size: 0.9rem;
   padding: 0.4rem 0.6rem;
 }
+
 textarea.custom-input {
   height: auto;
 }
+
 .btn-gradient {
   font-size: 0.95rem;
   padding: 0.7rem 1.2rem;
@@ -180,22 +187,17 @@ textarea.custom-input {
   background: linear-gradient(135deg, #ffc107, #ffb300);
   color: #000;
   font-weight: 700;
-  letter-spacing: .5px;
-  transition: transform .15s ease, box-shadow .15s ease;
+  letter-spacing: 0.5px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+
 .btn-gradient:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(255,193,7,0.45);
+  box-shadow: 0 10px 20px rgba(255, 193, 7, 0.45);
 }
+
 @media (max-width: 576px) {
   .product-card { padding: 1rem; }
   .page-title { font-size: 1.8rem; }
 }
-.product-description {
-  color: #f8f9fa;       
-  font-size: 0.9rem;
-  line-height: 1.5;
-  opacity: 0.9;
-}
-
 </style>

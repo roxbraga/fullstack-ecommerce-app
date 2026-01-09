@@ -66,7 +66,7 @@ const notyf = new Notyf()
 
 const fetchProducts = async () => {
   try {
-    const { data } = await api.get('/product')
+    const { data } = await api.get('/product/active')
     products.value = data
   } catch (err) {
     console.error('Failed to load products', err)
@@ -91,8 +91,6 @@ onMounted(fetchProducts)
 </script>
 
 <style scoped>
-
-
 .container {
   position: relative;
   z-index: 1;

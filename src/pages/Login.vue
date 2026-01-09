@@ -6,19 +6,29 @@
       <div class="row align-items-center">
         <div class="col-lg-7">
           <h1 class="display-4 fw-bold">
-            PAINT and<br>
-            <span class="text-warning">BODYKITS</span>
+            Capstone-3<br>
+            <span class="text-warning">Full Stack Project</span>
           </h1>
 
           <p class="mt-4">
-            We bring your sports car’s true personality to life through
-            precision paintwork and custom body kits.
-            Designed for performance, built for presence.
+            This project represents my journey into full-stack development building the frontend, backend, and database layer from scratch to create a functional, real world e-commerce platform.
+            <br><br>
+            From interface design to server side logic, this system reflects hands-on experience in developing a complete full-stack application with real business use cases.
           </p>
 
-          <a href="#contact" class="btn btn-warning mt-3 contact-btn">
-            CONTACT US
-          </a>
+          <!-- ACTION BUTTONS -->
+          <div class="d-flex gap-3 mt-4 flex-wrap">
+            <a href="#contact" class="btn btn-warning contact-btn">
+              CONTACT US
+            </a>
+
+            <a
+              href="mailto:cristinofrancemadali@gmail.com"
+              class="btn btn-outline-light hire-btn"
+            >
+              HIRE ME
+            </a>
+          </div>
         </div>
 
         <!-- LOGIN CARD -->
@@ -70,8 +80,6 @@
       </div>
     </section>
 
-    
-
   </div>
 </template>
 
@@ -119,108 +127,68 @@ const handleSubmit = async () => {
 </script>
 
 <style scoped>
-.sticky-navbar {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: rgba(0,0,0,.85);
-  backdrop-filter: blur(6px);
+.login-card {
+  max-width: 350px;
+  border-radius: 1rem;
 }
 
-#about,
-#services,
-#design,
-#contact,
-#faq {
-  scroll-margin-top: 120px;
-}
-
-.section { padding: 5rem 0; }
-.section.dark { background: rgba(0,0,0,.65); }
-.section-title { color: #ffd84d; }
-
-.login-card { max-width: 350px; border-radius: 1rem; }
-
-.login-card .form-control,
-.contact-form .form-control {
+.login-card .form-control {
   background: rgba(0,0,0,.5);
   color: #fff;
   border: 1px solid #ffc107;
 }
 
-.login-card .form-control::placeholder,
-.contact-form .form-control::placeholder {
+.login-card .form-control::placeholder {
   color: #fff;
   opacity: .9;
 }
 
-.contact-btn:hover,
-.send-btn:hover {
+/* CONTACT BUTTON */
+.contact-btn,
+.hire-btn {
+  padding: 0.5rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* CONTACT BUTTON HOVER */
+.contact-btn:hover {
   background: transparent;
   color: #ffc107;
   border: 1px solid #ffc107;
 }
 
-.login-social i,
-.social-icons i {
+/* HIRE ME BUTTON */
+.hire-btn {
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  background: transparent;
+  transition: all 0.25s ease;
+}
+
+/* HIRE ME HOVER */
+.hire-btn:hover {
+  background: white;
+  color: #000;
+  border-color: white;
+}
+
+
+/* SOCIAL ICONS */
+.login-social i {
   font-size: 1.5rem;
-  margin: 0 .5rem;
+  margin: 0 .6rem;
   cursor: pointer;
   transition: color .3s, transform .3s;
 }
 
-.login-social i:hover,
-.social-icons i:hover {
+.login-social i:hover {
   color: #ffc107;
   transform: translateY(-3px);
 }
 
-.about-offset { margin-top: 10rem; }
-
-.about-image {
-  width: 320px;
-  height: 320px;
-  border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 0 25px 50px rgba(0,0,0,.6);
+html {
+  scroll-behavior: smooth;
 }
-
-.video-wrapper {
-  width: 100%;
-  max-width: 520px;
-  height: 300px;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,.6);
-}
-
-.video-wrapper video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.map-wrapper {
-  width: 100%;
-  height: 350px;
-  border-radius: 18px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0,0,0,.6);
-}
-
-.map-wrapper iframe {
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-.footer-section {
-  background: #0b0b0b;
-  padding: 2rem 0;
-}
-
-.footer-copy { opacity: .7; }
-.footer-credit { opacity: .5; font-size: .85rem; }
-
-html { scroll-behavior: smooth; }
 </style>

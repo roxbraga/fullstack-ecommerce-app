@@ -5,7 +5,8 @@ import api from '../api'
 export const useGlobalStore = defineStore('global', () => {
   const user = reactive({
     id: null,
-    name: null,
+    firstName: null,
+    lastName: null,
     email: null,
     mobileNo: null,
     isAdmin: null,
@@ -19,7 +20,8 @@ export const useGlobalStore = defineStore('global', () => {
       const { data } = await api.get('/users/details')
 
       user.id = data._id
-      user.name = `${data.firstName} ${data.lastName}` 
+      user.firstName = data.firstName
+      user.lastName = data.lastName
       user.email = data.email
       user.mobileNo = data.mobileNo
       user.isAdmin = data.isAdmin
@@ -31,12 +33,20 @@ export const useGlobalStore = defineStore('global', () => {
     }
   }
 
+  const updatePassword = async (newPassword) => {
+    const { data } = await api.patch('/users/update-password', {
+      newPassword
+    })
+    return data
+  }
+
   const logout = () => {
     localStorage.removeItem('token')
     localStorage.removeItem('role')
 
     user.id = null
-    user.name = null
+    user.firstName = null
+    user.lastName = null
     user.email = null
     user.mobileNo = null
     user.isAdmin = null
@@ -47,6 +57,14 @@ export const useGlobalStore = defineStore('global', () => {
     user,
     isLoggedIn,
     getUserDetails,
+    updatePassword,
     logout
   }
 })
+
+const updatePassword = async (newPassword) => {
+  const { data } = await api.patch('/users/update-password', {
+    newPassword
+  })
+  return data
+}

@@ -2,7 +2,7 @@
   <div class="container py-5">
     <h2 class="page-title mb-4">Product List</h2>
 
-    <div class="table-card" v-if="productsStore.products.length">
+    <div class="table-card" v-if="activeProducts.length">
       <div class="table-responsive">
         <table class="table table-dark table-hover align-middle mb-0">
           <thead class="table-head text-center">
@@ -17,8 +17,9 @@
           </thead>
 
           <tbody>
+            <!--  ACTIVE PRODUCTS ONLY -->
             <tr
-              v-for="product in productsStore.products"
+              v-for="product in activeProducts"
               :key="product._id"
               class="table-row"
             >
@@ -47,7 +48,7 @@
 
               <!-- PRICE -->
               <td class="price">
-                ₱{{ product.price }}
+                ₱{{ product.price.toLocaleString() }}
               </td>
 
               <!-- CATEGORY -->
@@ -57,11 +58,8 @@
 
               <!-- STATUS -->
               <td class="text-center">
-                <span
-                  class="status-pill"
-                  :class="product.isActive ? 'active' : 'inactive'"
-                >
-                  {{ product.isActive ? 'Active' : 'Inactive' }}
+                <span class="status-pill active">
+                  Active
                 </span>
               </td>
 
@@ -75,13 +73,10 @@
                 </router-link>
 
                 <button
-                  class="btn btn-sm w-100"
-                  :class="product.isActive
-                    ? 'btn-outline-danger'
-                    : 'btn-outline-success'"
-                  @click="productsStore.toggleActive(product)"
+                  class="btn btn-outline-danger btn-sm w-100"
+                  @click="archiveProduct(product._id)"
                 >
-                  {{ product.isActive ? 'Deactivate' : 'Activate' }}
+                  Archive
                 </button>
               </td>
             </tr>
@@ -92,20 +87,43 @@
 
     <!-- EMPTY STATE -->
     <div v-else class="empty-state text-center">
-      <p>No products found.</p>
+      <p>No active products found.</p>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useProductsStore } from '../stores/products'
+import { Notyf } from 'notyf'
+import 'notyf/notyf.min.css'
 
 const productsStore = useProductsStore()
 const expandedDesc = ref(null)
 
+const notyf = new Notyf({
+  duration: 2500,
+  position: { x: 'right', y: 'top' }
+})
+
+/*  ACTIVE PRODUCTS ONLY */
+const activeProducts = computed(() =>
+  productsStore.products.filter(p => p.isActive === true)
+)
+
 const toggleDesc = (id) => {
   expandedDesc.value = expandedDesc.value === id ? null : id
+}
+
+const archiveProduct = async (id) => {
+  if (!confirm('Archive this product?')) return
+
+  try {
+    await productsStore.archiveProduct(id)
+    notyf.success('Product archived')
+  } catch {
+    notyf.error('Failed to archive product')
+  }
 }
 
 onMounted(() => {
@@ -147,10 +165,6 @@ onMounted(() => {
 }
 
 /* ROW */
-.table-row {
-  transition: background 0.2s ease;
-}
-
 .table-row:hover {
   background: rgba(255, 255, 255, 0.04);
 }
@@ -158,7 +172,6 @@ onMounted(() => {
 /* DESCRIPTION */
 .product-description {
   max-width: 360px;
-  vertical-align: top;
 }
 
 .desc-text {
@@ -181,18 +194,12 @@ onMounted(() => {
 .desc-toggle {
   font-size: 0.75rem;
   color: #ffc107;
-  text-decoration: none;
-}
-
-.desc-toggle:hover {
-  text-decoration: underline;
 }
 
 /* PRICE */
 .price {
   font-family: monospace;
   font-weight: 600;
-  white-space: nowrap;
 }
 
 /* STATUS */
@@ -208,11 +215,6 @@ onMounted(() => {
   color: #fff;
 }
 
-.status-pill.inactive {
-  background: #6c757d;
-  color: #fff;
-}
-
 /* ACTIONS */
 .actions {
   min-width: 140px;
@@ -222,12 +224,5 @@ onMounted(() => {
 .empty-state {
   color: #ccc;
   font-style: italic;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .product-description {
-    max-width: 220px;
-  }
 }
 </style>

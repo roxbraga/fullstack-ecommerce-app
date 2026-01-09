@@ -1,9 +1,11 @@
 <template>
-  <div>
-    <h1 class="mb-3 text-warning text-center">Admin Dashboard</h1>
+  <div class="container py-5">
+    <h2 class="board-title text-center mb-4 text-warning">
+      Admin Dashboard
+    </h2>
 
     <!-- ACTION BAR -->
-    <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex justify-content-between align-items-center mb-3">
       <div class="form-check text-white">
         <input
           class="form-check-input"
@@ -26,23 +28,23 @@
     </div>
 
     <div class="table-responsive">
-      <table class="table table-dark table-striped align-middle table-sm compact-table">
+      <table class="table table-striped table-dark align-middle text-center">
         <thead>
           <tr>
-            <th class="col-check"></th>
-            <th class="col-name">Name</th>
-            <th class="col-price text-end">Price</th>
-            <th class="col-orders text-center">Orders</th>
-            <th class="col-stock text-center">Stock</th>
-            <th class="col-status text-center">Status</th>
-            <th class="col-action text-center">Action</th>
+            <th></th>
+            <th class="text-start">Name</th>
+            <th>Price</th>
+            <th>Orders</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          <tr v-for="p in productsStore.products" :key="p._id">
-            <!-- CHECKBOX -->
-            <td class="text-center col-check">
+          <!-- ACTIVE PRODUCTS ONLY -->
+          <tr v-for="p in activeProducts" :key="p._id">
+            <td>
               <input
                 type="checkbox"
                 class="form-check-input"
@@ -51,37 +53,31 @@
               />
             </td>
 
-            <!-- NAME -->
-            <td class="col-name text-truncate small fw-semibold">
+            <td class="text-start fw-semibold text-truncate">
               {{ p.name }}
             </td>
 
-            <!-- PRICE -->
-            <td class="col-price text-end small">
+            <td class="text-warning fw-semibold">
               ₱{{ p.price.toLocaleString() }}
             </td>
 
-            <!-- ORDERS -->
-            <td class="col-orders text-center small">
+            <td>
               {{ p.totalOrders ?? 0 }}
             </td>
 
-            <!-- STOCK -->
-            <td class="col-stock text-center small">
+            <td>
               <span :class="p.stock <= 5 ? 'text-warning fw-bold' : ''">
                 {{ p.stock ?? 0 }}
               </span>
             </td>
 
-            <!-- STATUS -->
-            <td class="col-status text-center">
-              <span class="badge bg-success px-2 py-1">
+            <td>
+              <span class="badge bg-success">
                 Active
               </span>
             </td>
 
-            <!-- ACTION -->
-            <td class="col-action text-center">
+            <td class="d-flex gap-2 justify-content-center">
               <button
                 class="btn btn-sm btn-outline-warning"
                 @click="archiveOne(p._id)"
@@ -91,9 +87,9 @@
             </td>
           </tr>
 
-          <tr v-if="!productsStore.products.length">
-            <td colspan="7" class="text-center text-muted py-3 small">
-              No products found
+          <tr v-if="!activeProducts.length">
+            <td colspan="7" class="text-center text-muted py-4">
+              No active products
             </td>
           </tr>
         </tbody>
@@ -108,13 +104,13 @@ import { useProductsStore } from '../stores/products'
 import { Notyf } from 'notyf'
 import 'notyf/notyf.min.css'
 
+const productsStore = useProductsStore()
+const selectedIds = ref([])
+
 const notyf = new Notyf({
   duration: 2500,
   position: { x: 'right', y: 'top' }
 })
-
-const productsStore = useProductsStore()
-const selectedIds = ref([])
 
 onMounted(async () => {
   try {
@@ -124,21 +120,23 @@ onMounted(async () => {
   }
 })
 
+const activeProducts = computed(() =>
+  productsStore.products.filter(p => p.isActive === true)
+)
+
 const allSelected = computed(() =>
-  productsStore.products.length &&
-  selectedIds.value.length === productsStore.products.length
+  activeProducts.value.length &&
+  selectedIds.value.length === activeProducts.value.length
 )
 
 const toggleAll = (e) => {
   selectedIds.value = e.target.checked
-    ? productsStore.products.map(p => p._id)
+    ? activeProducts.value.map(p => p._id)
     : []
 }
 
-// ARCHIVE SINGLE
 const archiveOne = async (id) => {
   if (!confirm('Archive this product?')) return
-
   try {
     await productsStore.archiveProduct(id)
     selectedIds.value = selectedIds.value.filter(i => i !== id)
@@ -148,10 +146,8 @@ const archiveOne = async (id) => {
   }
 }
 
-// ARCHIVE MULTIPLE
 const archiveSelected = async () => {
   if (!confirm(`Archive ${selectedIds.value.length} products?`)) return
-
   try {
     for (const id of selectedIds.value) {
       await productsStore.archiveProduct(id)
@@ -165,32 +161,19 @@ const archiveSelected = async () => {
 </script>
 
 <style scoped>
-/* GLOBAL COMPACT */
-.compact-table th,
-.compact-table td {
-  padding: 0.35rem 0.45rem;
-  font-size: 0.75rem;
+.board-title {
+  font-size: 2.4rem;
+}
+
+.table td,
+.table th {
   vertical-align: middle;
 }
 
-/* COLUMN WIDTHS */
-.col-check   { width: 36px; }
-.col-name    { max-width: 220px; }
-.col-price   { width: 90px; }
-.col-orders  { width: 70px; }
-.col-stock   { width: 70px; }
-.col-status  { width: 90px; }
-.col-action  { width: 90px; }
-
-/* TRUNCATE NAME */
 .text-truncate {
+  max-width: 260px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-/* BADGE SMALLER */
-.badge {
-  font-size: 0.65rem;
 }
 </style>

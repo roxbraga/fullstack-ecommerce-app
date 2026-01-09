@@ -73,7 +73,7 @@
           </li>
         </ul>
 
-        <!-- SEARCH (DESKTOP ONLY) -->
+        <!-- SEARCH  -->
         <form class="d-none d-lg-flex mx-lg-auto px-lg-3">
           <input
             class="form-control compact-search"

@@ -1,8 +1,11 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_JOB_TRACKER_API, 
-});
+  baseURL: import.meta.env.VITE_JOB_TRACKER_API,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
 
 // Automatically add token to headers
 api.interceptors.request.use(config => {

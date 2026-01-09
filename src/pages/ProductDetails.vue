@@ -22,7 +22,7 @@ const addItemToCart = async () => {
 const fetchProduct = async () => {
   try {
     const { data } = await api.get(
-      `/product/specific/${route.params.id}`
+      `/product/${route.params.id}`
     )
     product.value = data
   } catch (err) {
