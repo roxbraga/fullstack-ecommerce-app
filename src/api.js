@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_COURSE_BOOKING_API, 
+  baseURL: import.meta.env.VITE_JOB_TRACKER_API, 
 });
 
 // Automatically add token to headers
