@@ -3,7 +3,7 @@
     <!-- CONTENT -->
     <div class="container py-5">
       <div class="profile-card mx-auto">
-        <h2 class="page-title mb-4">My Profile</h2>
+        <h2 class="page-title mb-4">User Info</h2>
 
         <div class="info-row">
           <span>Name</span>

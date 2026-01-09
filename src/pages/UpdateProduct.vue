@@ -37,6 +37,15 @@
             required
           />
         </div>
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Stock</label>
+          <input
+            v-model.number="form.stock"
+            type="number"
+            class="form-control"
+            required
+          />
+        </div>
 
         <div class="col-md-6 mb-3">
           <label class="form-label">Category</label>
@@ -95,6 +104,7 @@ const form = reactive({
   description: '',
   price: 0,
   category: '',
+  quantity: '',
   isActive: true
 })
 
@@ -110,6 +120,7 @@ onMounted(async () => {
     form.price = product.price
     form.category = product.category
     form.isActive = product.isActive
+    form.stock = product.stock
   } catch {
     router.push('/admin/products')
   } finally {
@@ -123,8 +134,10 @@ const submit = async () => {
   if (form.name !== originalProduct.name) updates.name = form.name
   if (form.description !== originalProduct.description) updates.description = form.description
   if (form.price !== originalProduct.price) updates.price = form.price
+  if (form.stock !== originalProduct.stock) updates.stock = form.stock
   if (form.category !== originalProduct.category) updates.category = form.category
   if (form.isActive !== originalProduct.isActive) updates.isActive = form.isActive
+
 
   if (!Object.keys(updates).length) {
     alert('No changes detected')
@@ -134,7 +147,7 @@ const submit = async () => {
   try {
     await productsStore.updateProduct(productId, updates)
     alert('Product updated successfully')
-    router.push('/admin/products')
+    router.push('/admin/product-list')
   } catch (err) {
     console.error(err)
     alert('Failed to update product')
