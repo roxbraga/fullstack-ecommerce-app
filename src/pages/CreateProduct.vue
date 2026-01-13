@@ -4,7 +4,6 @@
 
     <form @submit.prevent="addProduct" class="product-card">
       <div class="row g-3">
-        <!-- NAME -->
         <div class="col-md-6">
           <label class="form-label">Name</label>
           <input
@@ -15,7 +14,6 @@
           />
         </div>
 
-        <!-- PRICE -->
         <div class="col-md-6">
           <label class="form-label">Price</label>
           <input
@@ -27,7 +25,6 @@
           />
         </div>
 
-        <!-- CATEGORY -->
         <div class="col-md-6">
           <label class="form-label">Category</label>
           <input
@@ -38,7 +35,6 @@
           />
         </div>
 
-        <!-- STOCK -->
         <div class="col-md-6">
           <label class="form-label">Stock</label>
           <input
@@ -50,7 +46,6 @@
           />
         </div>
 
-        <!-- DESCRIPTION -->
         <div class="col-12">
           <label class="form-label">Description</label>
           <textarea
@@ -61,7 +56,6 @@
           ></textarea>
         </div>
 
-        <!-- IMAGE -->
         <div class="col-12">
           <label class="form-label">Image URL</label>
           <input
@@ -72,7 +66,6 @@
           />
         </div>
 
-        <!-- ACTIVE -->
         <div class="col-12">
           <div class="form-check">
             <input
@@ -130,8 +123,6 @@ const form = reactive({
 async function addProduct() {
   try {
     await productsStore.addProduct({ ...form })
-
-    // reset form (clean & predictable)
     form.name = ''
     form.description = ''
     form.price = 0
@@ -139,7 +130,6 @@ async function addProduct() {
     form.stock = 0
     form.image = ''
     form.isActive = true
-
     router.push('/admin/product-list')
   } catch (err) {
     console.error(err)
@@ -162,14 +152,15 @@ async function addProduct() {
 
 .product-card {
   padding: 1.5rem;
-  border-radius: 12px;
-  backdrop-filter: blur(6px);
-  background: rgba(33, 37, 41, 0.75);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 193, 7, 0.45);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
 
 .custom-input {
-  background: rgba(248, 249, 250, 0.95);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 8px;
   height: 38px;
   font-size: 0.9rem;

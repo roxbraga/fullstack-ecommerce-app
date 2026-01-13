@@ -11,19 +11,23 @@ const product = ref(null)
 const loading = ref(true)
 const error = ref(false)
 
-/*  STOCK COMPUTED */
+/* STOCK COMPUTED */
 const inStock = computed(() => product.value?.stock > 0)
 
 const addItemToCart = async () => {
   if (!inStock.value) return
-  await cartStore.addToCart(product.value._id, 1)
+
+  try {
+    await cartStore.addToCart(product.value._id, 1)
+  } catch (err) {
+    console.error('Failed to add to cart', err)
+  }
 }
 
 const fetchProduct = async () => {
   try {
     const { data } = await api.get(
-      `/product/${route.params.id}`
-    )
+      `/products/${route.params.id}`)
     product.value = data
   } catch (err) {
     console.error('Failed to load product', err)
@@ -35,6 +39,7 @@ const fetchProduct = async () => {
 
 onMounted(fetchProduct)
 </script>
+
 
 <template>
   <!-- LOADING -->

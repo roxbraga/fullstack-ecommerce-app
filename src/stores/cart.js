@@ -12,9 +12,7 @@ export const useCartStore = defineStore("cart", {
     selectedItems: (state) => state.items.filter(i => i.selected),
 
     totalItems: (state) =>
-      state.items
-        .filter(i => i.selected)
-        .reduce((sum, i) => sum + i.quantity, 0),
+      state.items.reduce((sum, i) => sum + i.quantity, 0),
 
     totalPrice: (state) =>
       state.items
@@ -27,13 +25,14 @@ export const useCartStore = defineStore("cart", {
       this.loading = true
       try {
         const { data } = await api.get("/cart/get-cart")
+
         this.items = data.items.map(i => ({
           _id: i.productId._id,
           name: i.productId.name,
           price: i.productId.price,
           stock: i.productId.stock,
           quantity: i.quantity,
-          selected: i.selected
+          selected: i.selected ?? true
         }))
       } finally {
         this.loading = false
@@ -57,7 +56,7 @@ export const useCartStore = defineStore("cart", {
         price: i.productId.price,
         stock: i.productId.stock,
         quantity: i.quantity,
-        selected: i.selected
+        selected: i.selected ?? true
       }))
     },
 
@@ -72,7 +71,7 @@ export const useCartStore = defineStore("cart", {
         price: i.productId.price,
         stock: i.productId.stock,
         quantity: i.quantity,
-        selected: i.selected
+        selected: i.selected ?? true
       }))
     },
 

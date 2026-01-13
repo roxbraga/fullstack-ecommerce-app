@@ -9,39 +9,26 @@
     <form v-else class="form-card" @submit.prevent="submit">
       <div class="mb-3">
         <label class="form-label">Name</label>
-        <input
-          v-model="form.name"
-          type="text"
-          class="form-control"
-          required
-        />
+        <input v-model="form.name" type="text" class="form-control" required />
       </div>
 
       <div class="mb-3">
         <label class="form-label">Description</label>
-        <textarea
-          v-model="form.description"
-          rows="4"
-          class="form-control"
-          required
-        />
+        <textarea v-model="form.description" rows="4" class="form-control" required />
       </div>
 
       <div class="row">
         <div class="col-md-6 mb-3">
           <label class="form-label">Price</label>
-          <input
-            v-model.number="form.price"
-            type="number"
-            class="form-control"
-            required
-          />
+          <input v-model.number="form.price" type="number" class="form-control" required />
         </div>
+
         <div class="col-md-6 mb-3">
           <label class="form-label">Stock</label>
           <input
             v-model.number="form.stock"
             type="number"
+            min="0"
             class="form-control"
             required
           />
@@ -49,12 +36,7 @@
 
         <div class="col-md-6 mb-3">
           <label class="form-label">Category</label>
-          <input
-            v-model="form.category"
-            type="text"
-            class="form-control"
-            required
-          />
+          <input v-model="form.category" type="text" class="form-control" required />
         </div>
       </div>
 
@@ -71,14 +53,14 @@
       </div>
 
       <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-warning">
+        <button type="submit" class="btn btn-warning" :disabled="loading">
           Save Changes
         </button>
 
         <button
           type="button"
           class="btn btn-outline-secondary"
-          @click="router.push('/admin/products')"
+          @click="router.push('/admin/product-list')"
         >
           Cancel
         </button>
@@ -103,26 +85,27 @@ const form = reactive({
   name: '',
   description: '',
   price: 0,
+  stock: 0,
   category: '',
-  quantity: '',
   isActive: true
 })
 
-let originalProduct = null
+let originalProduct = {}
 
 onMounted(async () => {
   try {
     const product = await productsStore.getProductById(productId)
-    originalProduct = product
+
+    originalProduct = { ...product }
 
     form.name = product.name
     form.description = product.description
     form.price = product.price
+    form.stock = product.stock
     form.category = product.category
     form.isActive = product.isActive
-    form.stock = product.stock
   } catch {
-    router.push('/admin/products')
+    router.push('/admin/product-list')
   } finally {
     loading.value = false
   }
@@ -138,18 +121,20 @@ const submit = async () => {
   if (form.category !== originalProduct.category) updates.category = form.category
   if (form.isActive !== originalProduct.isActive) updates.isActive = form.isActive
 
-
   if (!Object.keys(updates).length) {
     alert('No changes detected')
     return
   }
 
   try {
-    await productsStore.updateProduct(productId, updates)
+    const updatedProduct = await productsStore.updateProduct(productId, updates)
+
+    // 🔥 IMPORTANT: sync latest values so stock & category stay correct
+    originalProduct = { ...updatedProduct }
+
     alert('Product updated successfully')
     router.push('/admin/product-list')
-  } catch (err) {
-    console.error(err)
+  } catch {
     alert('Failed to update product')
   }
 }

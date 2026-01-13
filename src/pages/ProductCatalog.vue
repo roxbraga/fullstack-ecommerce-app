@@ -66,7 +66,7 @@ const notyf = new Notyf()
 
 const fetchProducts = async () => {
   try {
-    const { data } = await api.get('/product/active')
+    const { data } = await api.get('/products/active')
     products.value = data
   } catch (err) {
     console.error('Failed to load products', err)

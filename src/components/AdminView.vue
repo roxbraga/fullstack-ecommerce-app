@@ -28,7 +28,6 @@
             Archived Products
           </router-link>
         </li>
-        
 
         <!-- ORDERS -->
         <li>
@@ -36,7 +35,7 @@
             class="sidebar-item sidebar-toggle"
             @click="isOrdersOpen = !isOrdersOpen"
           >
-            Orders
+            Monitoring
             <span class="chevron" :class="{ open: isOrdersOpen }">▾</span>
           </button>
 
@@ -61,7 +60,8 @@
       </ul>
 
       <!-- USER -->
-      <div class="mt-auto border-top pt-3">
+      
+      <div class="mt-auto border-top  pt-3">
         <div class="d-flex align-items-center mb-3">
           <div class="avatar me-2">{{ initials }}</div>
           <span>{{ store.user.firstName }}</span>
@@ -110,10 +110,10 @@ const logoutUser = () => {
   height: 100%;
 }
 
-/* ROOT */
 .admin-root {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: url('../assets/rox09.jpg') center / cover no-repeat;
   position: relative;
 }
@@ -125,26 +125,29 @@ const logoutUser = () => {
   background: rgba(0,0,0,0.55);
 }
 
-/* SIDEBAR */
 .admin-sidebar {
   width: 240px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
   padding: 1.25rem;
   background: linear-gradient(rgba(0,0,0,.85), rgba(0,0,0,.65));
   color: white;
-  z-index: 1;
+  z-index: 2;
+  overflow-y: auto;
 }
 
-/* MAIN */
 .admin-main {
   flex: 1;
+  height: 100vh;
+  overflow-y: auto;
   padding: 2rem;
   color: white;
   z-index: 1;
 }
 
-/* NAV ITEMS */
 .sidebar-item {
-  all: unset; 
+  all: unset;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -159,7 +162,6 @@ const logoutUser = () => {
   color: #ffc107;
 }
 
-/* SUB NAV */
 .sidebar-subnav {
   padding-left: 1rem;
   margin-top: .25rem;
@@ -177,7 +179,6 @@ const logoutUser = () => {
   color: #ffc107;
 }
 
-/* CHEVRON */
 .chevron {
   transition: transform .2s ease;
 }
@@ -186,7 +187,6 @@ const logoutUser = () => {
   transform: rotate(180deg);
 }
 
-/* AVATAR */
 .avatar {
   width: 32px;
   height: 32px;
@@ -197,17 +197,22 @@ const logoutUser = () => {
   font-weight: bold;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .admin-root {
     flex-direction: column;
+    height: auto;
   }
 
   .admin-sidebar {
+    position: relative;
+    height: auto;
+    overflow: visible;
     width: 100%;
   }
 
   .admin-main {
+    height: auto;
+    overflow: visible;
     padding: 1rem;
   }
 }

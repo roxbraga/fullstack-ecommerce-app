@@ -1,4 +1,3 @@
-// products
 import { defineStore } from 'pinia'
 import api from '../api'
 
@@ -24,11 +23,6 @@ export const useProductsStore = defineStore('products', {
       }
     },
 
-    async getProductById(productId) {
-      const { data } = await api.get(`/products/${productId}`)
-      return data
-    },
-
     async fetchAllProducts() {
       this.loading = true
       try {
@@ -39,9 +33,15 @@ export const useProductsStore = defineStore('products', {
       }
     },
 
+    async getProductById(productId) {
+      const { data } = await api.get(`/products/${productId}`)
+      return data
+    },
+
     async addProduct(product) {
-      const { data } = await api.post('/product', product)
-      this.products.unshift(data)
+      const { data } = await api.post('/products', product)
+      this.products.unshift(data.product)
+      return data.product
     },
 
     async updateProduct(productId, updates) {
@@ -51,8 +51,11 @@ export const useProductsStore = defineStore('products', {
       )
 
       const index = this.products.findIndex(p => p._id === productId)
-      if (index !== -1) this.products[index] = data
-      return data
+      if (index !== -1) {
+        this.products[index] = data.product
+      }
+
+      return data.product
     },
 
     async archiveProduct(productId) {
@@ -63,7 +66,7 @@ export const useProductsStore = defineStore('products', {
         this.products[index] = data.product
       }
 
-      return data
+      return data.product
     },
 
     async activateProduct(productId) {
@@ -71,10 +74,10 @@ export const useProductsStore = defineStore('products', {
 
       const index = this.products.findIndex(p => p._id === productId)
       if (index !== -1) {
-        this.products[index] = data.product ?? data
+        this.products[index] = data.product
       }
 
-      return data
+      return data.product
     },
 
     async deleteProduct(productId) {
@@ -83,3 +86,4 @@ export const useProductsStore = defineStore('products', {
     }
   }
 })
+
