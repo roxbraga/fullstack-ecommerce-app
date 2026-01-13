@@ -27,4 +27,7 @@ api.interceptors.response.use(
   }
 );
 
+console.log("BASE URL >>>", import.meta.env.VITE_JOB_TRACKER_API);
+
+
 export default api;

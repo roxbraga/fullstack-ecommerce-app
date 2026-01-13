@@ -17,7 +17,7 @@ export const useProductsStore = defineStore('products', {
     async fetchActiveProducts() {
       this.loading = true
       try {
-        const { data } = await api.get('/product/active')
+        const { data } = await api.get('/products/active')
         this.products = data
       } finally {
         this.loading = false
@@ -25,14 +25,14 @@ export const useProductsStore = defineStore('products', {
     },
 
     async getProductById(productId) {
-      const { data } = await api.get(`/product/${productId}`)
+      const { data } = await api.get(`/products/${productId}`)
       return data
     },
 
     async fetchAllProducts() {
       this.loading = true
       try {
-        const { data } = await api.get('/product/all')
+        const { data } = await api.get('/products/all')
         this.products = data
       } finally {
         this.loading = false
@@ -46,7 +46,7 @@ export const useProductsStore = defineStore('products', {
 
     async updateProduct(productId, updates) {
       const { data } = await api.patch(
-        `/product/${productId}/update`,
+        `/products/${productId}/update`,
         updates
       )
 
@@ -56,7 +56,7 @@ export const useProductsStore = defineStore('products', {
     },
 
     async archiveProduct(productId) {
-      const { data } = await api.patch(`/product/${productId}/archive`)
+      const { data } = await api.patch(`/products/${productId}/archive`)
 
       const index = this.products.findIndex(p => p._id === productId)
       if (index !== -1) {
@@ -67,7 +67,7 @@ export const useProductsStore = defineStore('products', {
     },
 
     async activateProduct(productId) {
-      const { data } = await api.patch(`/product/${productId}/activate`)
+      const { data } = await api.patch(`/products/${productId}/activate`)
 
       const index = this.products.findIndex(p => p._id === productId)
       if (index !== -1) {
@@ -78,7 +78,7 @@ export const useProductsStore = defineStore('products', {
     },
 
     async deleteProduct(productId) {
-      await api.delete(`/product/${productId}`)
+      await api.delete(`/products/${productId}`)
       this.products = this.products.filter(p => p._id !== productId)
     }
   }
