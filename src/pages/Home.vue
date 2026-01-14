@@ -1,6 +1,51 @@
 <script setup>
-import Banner from '../components/Banner.vue'
+import { ref } from "vue"
+import Banner from "../components/Banner.vue"
+
+const WEB3FORMS_ACCESS_KEY = "ccbb74f7-4ceb-4247-b533-c7a8807ccd29"
+
+const name = ref("")
+const email = ref("")
+const message = ref("")
+const isLoading = ref(false)
+
+const submitForm = async () => {
+  isLoading.value = true
+
+  try {
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_ACCESS_KEY,
+        name: name.value,
+        email: email.value,
+        message: message.value,
+      }),
+    })
+
+    const result = await response.json()
+
+    if (result.success) {
+      alert("Message sent successfully")
+      name.value = ""
+      email.value = ""
+      message.value = ""
+    } else {
+      alert("Failed to send message")
+    }
+  } catch (error) {
+    console.error(error)
+    alert("Error sending message")
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
+
 
 <template>
   <div id="home" class="page-offset">
@@ -111,17 +156,18 @@ import Banner from '../components/Banner.vue'
             </div>
 
             <div class="col-lg-6">
-              <form class="contact-form">
-                <input class="form-control mb-3" placeholder="Your Name" />
-                <input class="form-control mb-3" placeholder="Email Address" />
+              <form @submit.prevent= "submitForm" class="contact-form">
+                <input v-model="name" type="text" class="form-control mb-3" placeholder="Your Name" />
+                <input v-model="email" type="email" class="form-control mb-3" placeholder="Email Address" />
                 <textarea
+                  v-model="message"
                   rows="5"
                   class="form-control mb-3"
                   placeholder="Your Message"
                 ></textarea>
 
-                <button class="btn w-100 send-btn">
-                  Send Message
+                <button type="submit" class="btn w-100 submit-btn" :disabled="isLoading">
+                  {{ isLoading ? "Sending..." : "Submit" }}
                 </button>
 
                 <div class="social-icons mt-4">
@@ -250,7 +296,7 @@ import Banner from '../components/Banner.vue'
 }
 
 /* SEND MESSAGE  */
-.send-btn {
+.submit-btn {
   background: #ffc107;
   color: #000;
   font-weight: 600;
@@ -258,7 +304,7 @@ import Banner from '../components/Banner.vue'
   transition: all 0.25s ease;
 }
 
-.send-btn:hover {
+.submit-btn:hover {
   background: transparent;
   color: #ffc107;
 }
