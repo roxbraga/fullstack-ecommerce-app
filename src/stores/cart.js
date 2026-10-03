@@ -1,4 +1,3 @@
-// cart
 import { defineStore } from "pinia"
 import api from "../api"
 
@@ -9,30 +8,38 @@ export const useCartStore = defineStore("cart", {
   }),
 
   getters: {
-    selectedItems: (state) => state.items.filter(i => i.selected),
+    selectedItems: (state) =>
+      state.items.filter(item => item.selected),
 
     totalItems: (state) =>
-      state.items.reduce((sum, i) => sum + i.quantity, 0),
+      state.items.reduce(
+        (total, item) => total + item.quantity,
+        0
+      ),
 
     totalPrice: (state) =>
       state.items
-        .filter(i => i.selected)
-        .reduce((sum, i) => sum + i.price * i.quantity, 0)
+        .filter(item => item.selected)
+        .reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        )
   },
 
   actions: {
     async fetchCart() {
       this.loading = true
+
       try {
         const { data } = await api.get("/cart/get-cart")
 
-        this.items = data.items.map(i => ({
-          _id: i.productId._id,
-          name: i.productId.name,
-          price: i.productId.price,
-          stock: i.productId.stock,
-          quantity: i.quantity,
-          selected: i.selected ?? true
+        this.items = (data.cartItems || []).map(item => ({
+          _id: item.productId._id,
+          name: item.productId.name,
+          price: item.productId.price,
+          stock: item.productId.stock,
+          quantity: item.quantity,
+          selected: item.selected ?? true
         }))
       } finally {
         this.loading = false
@@ -40,39 +47,29 @@ export const useCartStore = defineStore("cart", {
     },
 
     async addToCart(productId, quantity = 1) {
-      await api.post("/cart/add-to-cart", { productId, quantity })
+      await api.post("/cart/add-to-cart", {
+        productId,
+        quantity
+      })
+
       await this.fetchCart()
     },
 
     async updateItem(productId, payload) {
-      const { data } = await api.patch("/cart/update-cart-quantity", {
+      await api.patch("/cart/update-cart-quantity", {
         productId,
         ...payload
       })
 
-      this.items = data.items.map(i => ({
-        _id: i.productId._id,
-        name: i.productId.name,
-        price: i.productId.price,
-        stock: i.productId.stock,
-        quantity: i.quantity,
-        selected: i.selected ?? true
-      }))
+      await this.fetchCart()
     },
 
     async removeFromCart(productId) {
-      const { data } = await api.patch(
+      await api.patch(
         `/cart/${productId}/remove-from-cart`
       )
 
-      this.items = data.items.map(i => ({
-        _id: i.productId._id,
-        name: i.productId.name,
-        price: i.productId.price,
-        stock: i.productId.stock,
-        quantity: i.quantity,
-        selected: i.selected ?? true
-      }))
+      await this.fetchCart()
     },
 
     async clearCart() {
