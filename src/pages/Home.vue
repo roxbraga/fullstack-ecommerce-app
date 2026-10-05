@@ -50,6 +50,74 @@ const submitForm = async () => {
 <template>
   <div id="home" class="page-offset">
     <Banner />
+        <!-- CAROUSEL -->
+    <section class="carousel-section">
+      <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-inner">
+
+          <div class="carousel-item active">
+            <img
+              src="/images/c1.jpg"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/c2.jpg"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/mustang.png"
+              class="d-block w-100 carousel-img"
+              alt="Mustang"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/c1.png"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/86.png"
+              class="d-block w-100 carousel-img"
+              alt="Toyota 86"
+            />
+          </div>
+
+        </div>
+
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon"></span>
+        </button>
+
+      </div>
+    </section>
 
     <!-- ABOUT -->
     <section id="about" class="section">
@@ -344,5 +412,16 @@ const submitForm = async () => {
     width: 240px;
     height: 240px;
   }
+}
+
+.carousel-section {
+  padding: 2rem 0 5rem;
+}
+
+.carousel-img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 18px;
 }
 </style>
