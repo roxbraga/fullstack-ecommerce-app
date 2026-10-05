@@ -50,74 +50,67 @@ const submitForm = async () => {
 <template>
   <div id="home" class="page-offset">
     <Banner />
-        <!-- CAROUSEL -->
-    <section class="carousel-section">
-      <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
+ 
+    <!-- BRAND LOGO CAROUSEL -->
+<section class="brand-carousel py-5">
+  <div class="container">
+    <div id="brandCarousel" class="carousel slide" data-bs-ride="carousel">
 
-        <div class="carousel-inner">
+      <div class="carousel-inner text-center">
 
-          <div class="carousel-item active">
-            <img
-              src="/images/c1.jpg"
-              class="d-block w-100 carousel-img"
-              alt="Car"
-            />
+        <!-- SLIDE 1 -->
+        <div class="carousel-item active">
+          <div class="d-flex justify-content-center gap-5 flex-wrap">
+
+            <img src="../images/honda1.webp" class="brand-logo" alt="Honda">
+            <img src="../images/bentley.png" class="brand-logo" alt="Bentley">
+            <img src="../images/peugeot.png" class="brand-logo" alt="Peugeot">
+            <img src="../images/hyundai.png" class="brand-logo" alt="Hyundai">
+            <img src="../images/lexus.png" class="brand-logo" alt="Lexus">
+            <img src="../images/nissan.png" class="brand-logo" alt="Nissan">
+
           </div>
-
-          <div class="carousel-item">
-            <img
-              src="/images/c2.jpg"
-              class="d-block w-100 carousel-img"
-              alt="Car"
-            />
-          </div>
-
-          <div class="carousel-item">
-            <img
-              src="/images/mustang.png"
-              class="d-block w-100 carousel-img"
-              alt="Mustang"
-            />
-          </div>
-
-          <div class="carousel-item">
-            <img
-              src="/images/c1.png"
-              class="d-block w-100 carousel-img"
-              alt="Car"
-            />
-          </div>
-
-          <div class="carousel-item">
-            <img
-              src="/images/86.png"
-              class="d-block w-100 carousel-img"
-              alt="Toyota 86"
-            />
-          </div>
-
         </div>
 
-        <button
-          class="carousel-control-prev"
-          type="button"
-          data-bs-target="#carCarousel"
-          data-bs-slide="prev"
-        >
-          <span class="carousel-control-prev-icon"></span>
-        </button>
+        <!-- SLIDE 2 -->
+        <div class="carousel-item">
+          <div class="d-flex justify-content-center gap-5 flex-wrap">
 
-        <button
-          class="carousel-control-next"
-          type="button"
-          data-bs-target="#carCarousel"
-          data-bs-slide="next"
-        >
-          <span class="carousel-control-next-icon"></span>
-        </button>
+            <img src="../images/bmw.png" class="brand-logo" alt="BMW">
+            <img src="../images/audi.png" class="brand-logo" alt="Audi">
+            <img src="../images/mercedes.png" class="brand-logo" alt="Mercedes">
+            <img src="../images/toyota.png" class="brand-logo" alt="Toyota">
+            <img src="../images/lambo1.png" class="brand-logo" alt="Lamborghini">
+            <img src="../images/mclaren.png" class="brand-logo" alt="McLaren">
+
+          </div>
+        </div>
 
       </div>
-    </section>
+
+      <!-- LEFT ARROW -->
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#brandCarousel"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon"></span>
+      </button>
+
+      <!-- RIGHT ARROW -->
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#brandCarousel"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon"></span>
+      </button>
+
+    </div>
+  </div>
+</section>
 
     <!-- ABOUT -->
     <section id="about" class="section">
@@ -248,6 +241,75 @@ const submitForm = async () => {
             </div>
           </div>
         </div>
+      </div>
+    </section>
+
+           <!-- CAROUSEL -->
+    <section class="carousel-section">
+      <div id="carCarousel" class="carousel slide" data-bs-ride="carousel">
+
+        <div class="carousel-inner">
+
+          <div class="carousel-item active">
+            <img
+              src="/images/c1.jpg"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/c2.jpg"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/mustang.png"
+              class="d-block w-100 carousel-img"
+              alt="Mustang"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/c1.png"
+              class="d-block w-100 carousel-img"
+              alt="Car"
+            />
+          </div>
+
+          <div class="carousel-item">
+            <img
+              src="/images/86.png"
+              class="d-block w-100 carousel-img"
+              alt="Toyota 86"
+            />
+          </div>
+
+        </div>
+
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carCarousel"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carCarousel"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon"></span>
+        </button>
+
       </div>
     </section>
 
