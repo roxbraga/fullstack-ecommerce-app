@@ -486,4 +486,32 @@ const submitForm = async () => {
   object-fit: cover;
   border-radius: 18px;
 }
+
+/* BRAND CAROUSEL */
+.brand-carousel .carousel-control-prev-icon,
+.brand-carousel .carousel-control-next-icon {
+  filter: invert(1);
+  opacity: 0.4;
+}
+
+.brand-carousel .carousel-control-prev-icon:hover,
+.brand-carousel .carousel-control-next-icon:hover {
+  opacity: 0.8;
+}
+
+.brand-carousel {
+  background: transparent;
+}
+
+.brand-logo {
+  height: 40px;
+  opacity: 0.6;
+  filter: grayscale(100%);
+  transition: all 0.3s ease;
+}
+
+.brand-logo:hover {
+  opacity: 1;
+  filter: grayscale(0%);
+}
 </style>
