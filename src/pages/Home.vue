@@ -62,12 +62,12 @@ const submitForm = async () => {
         <div class="carousel-item active">
           <div class="d-flex justify-content-center gap-5 flex-wrap">
 
-            <img src="../images/honda1.webp" class="brand-logo" alt="Honda">
-            <img src="../images/bentley.png" class="brand-logo" alt="Bentley">
-            <img src="../images/peugeot.png" class="brand-logo" alt="Peugeot">
-            <img src="../images/hyundai.png" class="brand-logo" alt="Hyundai">
-            <img src="../images/lexus.png" class="brand-logo" alt="Lexus">
-            <img src="../images/nissan.png" class="brand-logo" alt="Nissan">
+            <img src="/images/honda1.webp" class="brand-logo" alt="Honda">
+            <img src="/images/bentley.png" class="brand-logo" alt="Bentley">
+            <img src="/images/peugeot.png" class="brand-logo" alt="Peugeot">
+            <img src="/images/hyundai.png" class="brand-logo" alt="Hyundai">
+            <img src="/images/lexus.png" class="brand-logo" alt="Lexus">
+            <img src="/images/nissan.png" class="brand-logo" alt="Nissan">
 
           </div>
         </div>
