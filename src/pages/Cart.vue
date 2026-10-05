@@ -2,7 +2,9 @@
   <div class="page text-white">
     <div class="container py-5">
 
-      <h2 class="page-title text-warning mb-4 text-center">Shopping Cart</h2>
+      <h2 class="page-title text-warning mb-4 text-center">
+        Shopping Cart
+      </h2>
 
       <div class="row g-4" v-if="cart.items.length">
 
@@ -138,59 +140,89 @@ onMounted(() => {
 
 const allSelected = computed({
   get() {
-    return cart.items.length && cart.items.every(i => i.selected)
+    return cart.items.length > 0 &&
+      cart.items.every(item => item.selected)
   },
-  set(val) {
-    cart.items.forEach(i => {
-      cart.updateItem(i._id, { selected: val })
+
+  set(value) {
+    cart.items.forEach(item => {
+      cart.updateItem(item._id, {
+        selected: value
+      })
     })
   }
 })
 
 const toggleItem = (item) => {
-  cart.updateItem(item._id, { selected: !item.selected })
+  cart.updateItem(item._id, {
+    selected: item.selected
+  })
 }
 
 const selectedItems = computed(() =>
-  cart.items.filter(i => i.selected)
+  cart.items.filter(item => item.selected)
 )
 
 const selectedTotal = computed(() =>
   selectedItems.value.reduce(
-    (sum, i) => sum + i.price * i.quantity,
+    (sum, item) => sum + item.price * item.quantity,
     0
   )
 )
 
 const increase = (item) => {
-  cart.updateItem(item._id, { quantity: item.quantity + 1 })
+  cart.updateItem(item._id, {
+    quantity: item.quantity + 1
+  })
 }
 
 const decrease = (item) => {
   if (item.quantity > 1) {
-    cart.updateItem(item._id, { quantity: item.quantity - 1 })
+    cart.updateItem(item._id, {
+      quantity: item.quantity - 1
+    })
   }
 }
 
 const checkoutSelected = async () => {
-  const selected = cart.items.filter(i => i.selected)
-  const remaining = cart.items.filter(i => !i.selected)
+  const selected = cart.items.filter(item => item.selected)
+
+  if (!selected.length) {
+    notyf.error('Please select at least one item')
+    return
+  }
 
   try {
-    cart.items = selected
-    await api.post('/orders/checkout')
-    router.push('/orders')
+    await api.post('/orders/checkout', {
+      items: selected.map(item => ({
+        productId: item._id,
+        quantity: item.quantity
+      }))
+    })
 
-    cart.clearCart()
-    for (const r of remaining) {
-      cart.addToCart(r._id, r.quantity)
-    }
+    const selectedIds = new Set(
+      selected.map(item => item._id)
+    )
 
-    ordersStore.fetchMyOrders()
-    productsStore.fetchActiveProducts()
+    cart.items = cart.items.filter(
+      item => !selectedIds.has(item._id)
+    )
+
+    await ordersStore.fetchMyOrders()
+    await productsStore.fetchActiveProducts()
+
     notyf.success('Checkout successful!')
+
+    router.push('/orders')
   } catch (err) {
-    notyf.error(err.response?.data?.message || 'Checkout failed')
+    console.error(
+      'Checkout error:',
+      err.response?.data || err
+    )
+
+    notyf.error(
+      err.response?.data?.message || 'Checkout failed'
+    )
   }
 }
 </script>
@@ -339,6 +371,7 @@ const checkoutSelected = async () => {
     grid-template-columns: 1fr;
     text-align: center;
   }
+
   .cart-total {
     text-align: center;
   }
