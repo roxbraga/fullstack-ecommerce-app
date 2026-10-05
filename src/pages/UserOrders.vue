@@ -2,13 +2,21 @@
   <div class="page text-white">
     <div class="container py-4 py-md-5">
 
-      <h2 class="text-warning mb-4 text-center">My Orders</h2>
+      <h2 class="text-warning mb-4 text-center">
+        My Orders
+      </h2>
 
-      <div v-if="loading" class="text-center text-muted py-5">
+      <div
+        v-if="loading"
+        class="text-center text-muted py-5"
+      >
         Loading orders...
       </div>
 
-      <div v-else-if="orders.length" class="row g-4">
+      <div
+        v-else-if="orders.length"
+        class="row g-4"
+      >
         <div
           v-for="order in orders"
           :key="order._id"
@@ -21,6 +29,7 @@
                 <div class="order-id">
                   Order #{{ order._id }}
                 </div>
+
                 <div class="order-date">
                   {{ formatDate(order.orderedOn) }}
                 </div>
@@ -28,52 +37,87 @@
 
               <span
                 class="status-pill"
-                :class="order.status"
+                :class="order.status.toLowerCase()"
               >
                 {{ order.status.toUpperCase() }}
               </span>
             </div>
 
             <div class="order-items">
+
               <div
                 v-for="item in order.products"
                 :key="item._id"
                 class="order-item"
               >
+
                 <div class="item-left">
+
                   <img
-                    :src="item.image"
+                    :src="
+                      item.productId?.image ||
+                      '/images/placeholder.png'
+                    "
+                    :alt="
+                      item.productId?.name ||
+                      'Product'
+                    "
                     class="item-image"
                   />
 
                   <div class="item-info">
+
                     <span class="item-name">
-                      {{ item.name }}
+                      {{
+                        item.productId?.name ||
+                        'Deleted product'
+                      }}
                     </span>
+
                     <span class="item-qty">
                       × {{ item.quantity }}
                     </span>
+
                   </div>
                 </div>
 
                 <div class="item-price">
-                  ₱{{ (item.price * item.quantity).toLocaleString() }}
+                  ₱{{
+                    (
+                      (item.productId?.price || 0) *
+                      item.quantity
+                    ).toLocaleString()
+                  }}
                 </div>
+
               </div>
+
             </div>
 
             <div class="order-bottom">
-              <span class="total-label">Total</span>
+
+              <span class="total-label">
+                Total
+              </span>
+
               <strong class="total-price text-warning">
-                ₱{{ order.totalPrice.toLocaleString() }}
+                ₱{{
+                  Number(
+                    order.totalPrice || 0
+                  ).toLocaleString()
+                }}
               </strong>
+
             </div>
 
           </div>
         </div>
       </div>
 
-      <p v-else class="text-center text-muted py-5">
+      <p
+        v-else
+        class="text-center text-muted py-5"
+      >
         You have no orders yet.
       </p>
 
@@ -91,11 +135,19 @@ onMounted(() => {
   ordersStore.fetchMyOrders()
 })
 
-const orders = computed(() => ordersStore.orders)
-const loading = computed(() => ordersStore.loading)
+const orders = computed(() =>
+  ordersStore.orders
+)
 
-const formatDate = (date) =>
-  new Date(date).toLocaleString()
+const loading = computed(() =>
+  ordersStore.loading
+)
+
+const formatDate = (date) => {
+  if (!date) return 'N/A'
+
+  return new Date(date).toLocaleString()
+}
 </script>
 
 <style scoped>
