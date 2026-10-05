@@ -488,7 +488,7 @@ const submitForm = async () => {
 }
 
 /* BRAND CAROUSEL */
-.brand-carousel .carousel-control-prev-icon,
+/* .brand-carousel .carousel-control-prev-icon,
 .brand-carousel .carousel-control-next-icon {
   filter: invert(1);
   opacity: 0.4;
@@ -497,6 +497,18 @@ const submitForm = async () => {
 .brand-carousel .carousel-control-prev-icon:hover,
 .brand-carousel .carousel-control-next-icon:hover {
   opacity: 0.8;
+} */
+
+.brand-carousel .carousel-control-prev-icon,
+.brand-carousel .carousel-control-next-icon {
+  filter: brightness(0) saturate(100%) invert(25%);
+  opacity: 0.8;
+}
+
+.brand-carousel .carousel-control-prev-icon:hover,
+.brand-carousel .carousel-control-next-icon:hover {
+  filter: brightness(0) saturate(100%) invert(15%);
+  opacity: 1;
 }
 
 .brand-carousel {
